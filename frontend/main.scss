@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Condensed:wght@400;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Quicksand', sans-serif;
+  line-height: 1.5;
+}
+
+html {
+  //   background: linear-gradient(40deg, #ea00ff, #140524);
+  background: radial-gradient(#280a48, #20043d);
+  color: #ebe7ef;
+  height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  &_menu {
+    display: flex;
+    width: 100%;
+    margin: auto;
+    background: #140524;
+    font-size: 1.4rem;
+    &_button {
+      display: flex;
+      color: white;
+      text-decoration: none;
+      padding: 0.2rem;
+      background: none;
+      border: none;
+      font-size: inherit;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      &::after {
+        content: '';
+        height: 80%;
+        position: relative;
+        top: 10%;
+        left: 10px;
+        border-right: 1px solid white;
+      }
+      &:hover {
+        border-bottom: 1px solid #7925d3;
+        color: #ebe7ef;
+      }
+      &_log {
+        display: flex;
+        margin-left: auto;
+        margin-right: 1rem;
+        color: white;
+        text-decoration: none;
+        padding: 0.2rem;
+        background: none;
+        border: none;
+        font-size: inherit;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+          border-bottom: 1px solid #7925d3;
+          color: #ebe7ef;
+        }
+        &::before {
+          content: '';
+          height: 80%;
+          position: relative;
+          top: 10%;
+          right: 10px;
+          border-right: 1px solid white;
+        }
+      }
+      &:first-child {
+        margin-left: auto;
+      }
+    }
+    &_login {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      margin-top: 5%;
+      background: #140524;
+      width: 20%;
+      border-radius: 4px;
+      &_credentials {
+        font-size: 1.2rem;
+        margin:0.2rem auto;
+        width: 70%;
+        text-align: center;
+      }
+      &_submit{
+        display: flex;
+        margin: auto;
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+          border-bottom: 1px solid #7925d3;
+          color: #ebe7ef;
+        }
+        
+      }
+    }
+  }
+}

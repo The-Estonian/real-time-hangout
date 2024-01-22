@@ -12,7 +12,7 @@ func fileExists(filename string) bool {
 	}
 	return !info.IsDir()
 }
-func Engine() {
+func Create() {
 	if !fileExists("./database/forum.db") {
 		fmt.Println("Did not find the Database! Starting regeneration!")
 		CreateDB()

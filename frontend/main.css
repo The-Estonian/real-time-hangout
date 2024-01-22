@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Condensed:wght@400;700&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+  line-height: 1.5;
+}
+
+html {
+  background: radial-gradient(#280a48, #20043d);
+  color: #ebe7ef;
+  height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.container_menu {
+  display: flex;
+  width: 100%;
+  margin: auto;
+  background: #140524;
+  font-size: 1.4rem;
+}
+.container_menu_button {
+  display: flex;
+  color: white;
+  text-decoration: none;
+  padding: 0.2rem;
+  background: none;
+  border: none;
+  font-size: inherit;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.container_menu_button::after {
+  content: "";
+  height: 80%;
+  position: relative;
+  top: 10%;
+  left: 10px;
+  border-right: 1px solid white;
+}
+.container_menu_button:hover {
+  border-bottom: 1px solid #7925d3;
+  color: #ebe7ef;
+}
+.container_menu_button_log {
+  display: flex;
+  margin-left: auto;
+  margin-right: 1rem;
+  color: white;
+  text-decoration: none;
+  padding: 0.2rem;
+  background: none;
+  border: none;
+  font-size: inherit;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+.container_menu_button_log:hover {
+  border-bottom: 1px solid #7925d3;
+  color: #ebe7ef;
+}
+.container_menu_button_log::before {
+  content: "";
+  height: 80%;
+  position: relative;
+  top: 10%;
+  right: 10px;
+  border-right: 1px solid white;
+}
+.container_menu_button:first-child {
+  margin-left: auto;
+}
+.container_menu_login {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-top: 5%;
+  background: #140524;
+  width: 20%;
+  border-radius: 4px;
+}
+.container_menu_login_credentials {
+  font-size: 1.2rem;
+  margin: 0.2rem auto;
+  width: 70%;
+  text-align: center;
+}
+.container_menu_login_submit {
+  display: flex;
+  margin: auto;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+.container_menu_login_submit:hover {
+  border-bottom: 1px solid #7925d3;
+  color: #ebe7ef;
+}/*# sourceMappingURL=main.css.map */
