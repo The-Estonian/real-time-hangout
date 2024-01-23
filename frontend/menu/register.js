@@ -118,11 +118,3 @@ export const RegisterMenu = () => {
   register.appendChild(registerSubmit);
   return register;
 };
-
-// Username;
-// Age;
-// Gender;
-// FirstName;
-// LastName;
-// Email;
-// Password;

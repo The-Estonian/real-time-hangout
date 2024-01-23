@@ -26,6 +26,8 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	if validators.ValidateLoginBeforeDB(username, password) {
 		callback["login"] = "success"
 		// create cookie and timers, send to DB and User 
+	} else {
+		callback["login"] = "rejected"
 	}
 	writeData, err := json.Marshal(callback)
 	if err != nil {

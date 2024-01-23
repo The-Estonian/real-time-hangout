@@ -7,7 +7,7 @@ const root = document.querySelector('#root');
 
 const menuContainer = Menu();
 const rootContainer = NewElement('div', 'container');
-const [loginContainer, loginOrRegister, serverResponse] = Auth();
+const [loginContainer, loginOrRegister] = Auth();
 
 export const GiveAccess = () => {
   rootContainer.replaceWith(menuContainer);

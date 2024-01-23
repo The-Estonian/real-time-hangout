@@ -1,18 +1,25 @@
-export const SendLoginData = (username, password) => {
-  var xhr = new XMLHttpRequest();
-  var url = 'http://localhost:8080/login';
-  xhr.open('POST', url, true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
+export const SendLoginData = async (username, password) => {
+  return new Promise((resolve, reject) => {
+    var xhr = new XMLHttpRequest();
+    var url = 'http://localhost:8080/login';
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
 
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      let json = JSON.parse(xhr.responseText);
-      console.log(json);
-    }
-  };
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          let json = JSON.parse(xhr.responseText);
+          // console.log(json.registration);
+          resolve(json);
+        } else {
+          reject(new Error('No response after login'));
+        }
+      }
+    };
 
-  var data = JSON.stringify({ username: username, password: password });
-  xhr.send(data);
+    var data = JSON.stringify({ username: username, password: password });
+    xhr.send(data);
+  });
 };
 
 export const SendRegisterData = async (
@@ -37,7 +44,7 @@ export const SendRegisterData = async (
           // console.log(json.registration);
           resolve(json);
         } else {
-          reject(new Error("No response after registration"));
+          reject(new Error('No response after registration'));
         }
       }
     };

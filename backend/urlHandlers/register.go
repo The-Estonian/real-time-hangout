@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"rtforum/helpers"
 	"rtforum/validators"
 )
 
@@ -25,7 +26,10 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	firstName := registerData["firstName"]
 	lastName := registerData["lastName"]
 	email := registerData["email"]
-	password := registerData["password"]
+	password, err := helpers.SetHashPassword(registerData["password"])
+	if err != nil {
+		fmt.Println("Registration password hash error on HandleRegister", err)
+	}
 	usernameOk, emailOk := validators.ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, email, password)
 	w.WriteHeader(http.StatusOK)
 

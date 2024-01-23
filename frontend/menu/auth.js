@@ -8,7 +8,6 @@ import {
 } from '../backendConnection/connection.js';
 
 export const Auth = () => {
-  let serverResponse = null;
   const loginContainer = LoginMenu();
   const registerContainer = RegisterMenu();
   const loginOrRegister = NewElement(
@@ -30,9 +29,14 @@ export const Auth = () => {
   loginContainer.childNodes[4].addEventListener('click', (e) => {
     let userName = loginContainer.childNodes[1].value;
     let password = loginContainer.childNodes[3].value;
-    console.log('Username: ', userName);
-    console.log('Password: ', password);
-    SendLoginData(userName, password);
+    SendLoginData(userName, password)
+      .then((data) => {
+        console.log(data);
+        if (data.login === 'success') {
+          GiveAccess();
+        }
+      })
+      .catch((error) => console.error(error));
   });
   registerContainer.childNodes[16].addEventListener('click', (e) => {
     let username = registerContainer.childNodes[1].value;
@@ -56,10 +60,16 @@ export const Auth = () => {
       .then((data) => {
         // console.log(data);
         if (data.registration === 'success') {
-          GiveAccess();
+          loginOrRegister.dispatchEvent(new Event('click'));
+          let registrationSuccess = NewElement(
+            'span',
+            'container_menu_login_credentials',
+            'Registration success, Please login!'
+          );
+          loginContainer.appendChild(registrationSuccess);
         }
       })
       .catch((error) => console.error(error));
   });
-  return [loginContainer, loginOrRegister, serverResponse];
+  return [loginContainer, loginOrRegister];
 };
