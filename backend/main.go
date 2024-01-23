@@ -11,16 +11,14 @@ import (
 
 func main() {
 	database.Create()
-
 	mux := http.NewServeMux()
 	server := &http.Server{
 		Addr:    ":8080",
 		Handler: mux,
 	}
 
-	// staticFiles := http.FileServer(http.Dir("./static"))
-	// mux.Handle("/static/", http.StripPrefix("/static/", staticFiles))
 	mux.HandleFunc("/socket", urlHandlers.IndexSocket)
+	mux.HandleFunc("/login", urlHandlers.HandleLogin)
 
 	fmt.Println("Server hosted at: https://localhost:" + "8080")
 	fmt.Println("To Kill Server press Ctrl+C")
