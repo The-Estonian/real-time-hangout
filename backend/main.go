@@ -19,8 +19,8 @@ func main() {
 
 	mux.HandleFunc("/socket", urlHandlers.IndexSocket)
 	mux.HandleFunc("/login", urlHandlers.HandleLogin)
+	mux.HandleFunc("/register", urlHandlers.HandleRegister)
 
-	fmt.Println("Server hosted at: https://localhost:" + "8080")
 	fmt.Println("To Kill Server press Ctrl+C")
 	err := server.ListenAndServe()
 	if err != nil {

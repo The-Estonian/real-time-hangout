@@ -5,18 +5,18 @@ import { Auth } from './menu/auth.js';
 
 const root = document.querySelector('#root');
 
-const rootContainer = NewElement('div', 'container');
-
-const [loginContainer, loginOrRegister] = Auth()
-
 const menuContainer = Menu();
+const rootContainer = NewElement('div', 'container');
+const [loginContainer, loginOrRegister, serverResponse] = Auth();
+
+export const GiveAccess = () => {
+  rootContainer.replaceWith(menuContainer);
+};
 
 rootContainer.appendChild(loginContainer);
 rootContainer.appendChild(loginOrRegister);
 
 root.appendChild(rootContainer);
-
-
 
 // const socket = SocketConnection();
 // const connectionButton = document.createElement('button');

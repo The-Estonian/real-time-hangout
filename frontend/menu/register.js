@@ -46,7 +46,7 @@ export const RegisterMenu = () => {
   const registerLastNameTitle = NewElement(
     'span',
     'container_menu_login_credentials',
-    'First Name'
+    'Last Name'
   );
   const registerLastName = NewElement(
     'input',
@@ -56,7 +56,7 @@ export const RegisterMenu = () => {
   const registerEmailTitle = NewElement(
     'span',
     'container_menu_login_credentials',
-    'First Name'
+    'Email'
   );
   const registerEmail = NewElement(
     'input',

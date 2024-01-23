@@ -13,9 +13,13 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 func Create() {
-	if !fileExists("./database/forum.db") {
+	if !fileExists("./database/rtforum.db") {
 		fmt.Println("Did not find the Database! Starting regeneration!")
+
 		CreateDB()
 		fmt.Println("Database Created!")
+
+		CreateUsers()
+		fmt.Println("User Table Created!")
 	}
 }

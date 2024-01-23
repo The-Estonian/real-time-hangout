@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"rtforum/validators"
 )
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +19,17 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	fmt.Println(loginData["username"])
-	fmt.Println(loginData["password"])
+	username := loginData["username"]
+	password := loginData["password"]
 	w.WriteHeader(http.StatusOK)
+	var callback = make(map[string]string)
+	if validators.ValidateLoginBeforeDB(username, password) {
+		callback["login"] = "success"
+		// create cookie and timers, send to DB and User 
+	}
+	writeData, err := json.Marshal(callback)
+	if err != nil {
+		fmt.Println("Error marshaling obj in HandleLogin")
+	}
+	w.Write(writeData)
 }
