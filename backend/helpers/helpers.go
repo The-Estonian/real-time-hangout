@@ -8,8 +8,7 @@ import (
 
 func CheckErr(fromWhere string, err error) {
 	if err != nil {
-		fmt.Println(fromWhere)
-		panic(err)
+		fmt.Println(fromWhere, "->", err)
 	}
 }
 

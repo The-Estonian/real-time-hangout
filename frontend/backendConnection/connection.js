@@ -1,10 +1,10 @@
 import { NewElement } from '../helpers/elements.js';
 
 const root = document.querySelector('#root');
+const modal = NewElement('div', 'backdrop');
+const spinner = NewElement('div', 'loader');
 
 export const SendLoginData = async (username, password) => {
-  const modal = NewElement('div', 'backdrop');
-  const spinner = NewElement('div', 'loader');
   modal.appendChild(spinner);
   root.appendChild(modal);
   return new Promise((resolve, reject) => {
@@ -39,6 +39,8 @@ export const SendRegisterData = async (
   email,
   password
 ) => {
+  modal.appendChild(spinner);
+  root.appendChild(modal);
   return new Promise((resolve, reject) => {
     var xhr = new XMLHttpRequest();
     var url = 'http://localhost:8080/register';
@@ -49,7 +51,7 @@ export const SendRegisterData = async (
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           let json = JSON.parse(xhr.responseText);
-          // console.log(json.registration);
+          root.removeChild(modal);
           resolve(json);
         } else {
           reject(new Error('No response after registration'));

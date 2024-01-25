@@ -23,11 +23,16 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	password := loginData["password"]
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
-	if validators.ValidateLoginBeforeDB(username, password) {
+	authenticate, err := validators.ValidateLoginBeforeDB(username, password)
+	if authenticate {
 		callback["login"] = "success"
-		// create cookie and timers, send to DB and User 
-	} else {
-		callback["login"] = "rejected"
+		// create cookie and timers, send to DB and User
+	}
+	if !authenticate {
+		callback["login"] = "userPwNoMatch"
+	}
+	if err != nil {
+		callback["login"] = "usernameError"
 	}
 	writeData, err := json.Marshal(callback)
 	if err != nil {

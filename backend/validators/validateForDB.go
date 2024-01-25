@@ -19,7 +19,7 @@ func ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, em
 	return checkUsername, checkEmail
 }
 
-func ValidateLoginBeforeDB(username, password string) bool {
-	getPassword := database.GetPassword(username)
-	return helpers.CheckPassword(password, getPassword)
+func ValidateLoginBeforeDB(username, password string) (bool, error) {
+	getPassword, err := database.GetPassword(username)
+	return helpers.CheckPassword(password, getPassword), err
 }

@@ -10,7 +10,7 @@
 
 html {
   //   background: linear-gradient(40deg, #ea00ff, #140524);
-  background: radial-gradient(#280a48, #20043d);
+  background: #20043d;
   color: #ebe7ef;
   height: 100vh;
 }
@@ -80,7 +80,8 @@ html {
         margin-left: auto;
       }
     }
-    &_login {
+    &_login,
+    &_register {
       display: flex;
       flex-direction: column;
       margin: auto;
@@ -90,11 +91,37 @@ html {
       border-radius: 4px;
       &_credentials {
         font-size: 1.2rem;
-        margin:0.2rem auto;
+        margin: 0.2rem auto;
         width: 70%;
         text-align: center;
+        outline: none;
+        border: 1px solid transparent;
+        &:focus {
+          border: 1px solid transparent;
+          // box-shadow: rgba(121, 37, 211, 0.2) 0px -35px 20px -20px;
+          box-shadow: rgba(121, 37, 211, 0.2) 5px 5px,
+            rgba(121, 37, 211, 0.1) 10px 10px,
+            rgba(121, 37, 211, 0.05) 15px 15px;
+        }
+        &_erro {
+          margin: 0.2rem auto;
+          text-align: center;
+          font-size: 0.7rem;
+          color: rgb(255, 255, 255);
+        }
       }
-      &_submit{
+      input[type='number'] {
+        -moz-appearance: textfield;
+      }
+      input[type='number']::-webkit-inner-spin-button,
+      input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+      }
+
+      &_submit {
         display: flex;
         margin: auto;
         color: white;
@@ -110,10 +137,14 @@ html {
           border-bottom: 1px solid #7925d3;
           color: #ebe7ef;
         }
-        
       }
     }
   }
+}
+
+.input-fail {
+  border: 1px solid red;
+  box-shadow: rgba(255, 0, 0, 0.4) 0px 7px 29px 0px;
 }
 
 .backdrop {

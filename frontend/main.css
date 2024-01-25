@@ -8,7 +8,7 @@
 }
 
 html {
-  background: radial-gradient(#280a48, #20043d);
+  background: #20043d;
   color: #ebe7ef;
   height: 100vh;
 }
@@ -78,7 +78,7 @@ html {
 .container_menu_button:first-child {
   margin-left: auto;
 }
-.container_menu_login {
+.container_menu_login, .container_menu_register {
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -87,13 +87,36 @@ html {
   width: 20%;
   border-radius: 4px;
 }
-.container_menu_login_credentials {
+.container_menu_login_credentials, .container_menu_register_credentials {
   font-size: 1.2rem;
   margin: 0.2rem auto;
   width: 70%;
   text-align: center;
+  outline: none;
+  border: 1px solid transparent;
 }
-.container_menu_login_submit {
+.container_menu_login_credentials:focus, .container_menu_register_credentials:focus {
+  border: 1px solid transparent;
+  box-shadow: rgba(121, 37, 211, 0.2) 5px 5px, rgba(121, 37, 211, 0.1) 10px 10px, rgba(121, 37, 211, 0.05) 15px 15px;
+}
+.container_menu_login_credentials_erro, .container_menu_register_credentials_erro {
+  margin: 0.2rem auto;
+  text-align: center;
+  font-size: 0.7rem;
+  color: rgb(255, 255, 255);
+}
+.container_menu_login input[type=number], .container_menu_register input[type=number] {
+  -moz-appearance: textfield;
+}
+.container_menu_login input[type=number]::-webkit-inner-spin-button,
+.container_menu_login input[type=number]::-webkit-outer-spin-button, .container_menu_register input[type=number]::-webkit-inner-spin-button,
+.container_menu_register input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+.container_menu_login_submit, .container_menu_register_submit {
   display: flex;
   margin: auto;
   color: white;
@@ -106,9 +129,14 @@ html {
   border-bottom: 1px solid transparent;
   transition: all 0.2s ease-in-out;
 }
-.container_menu_login_submit:hover {
+.container_menu_login_submit:hover, .container_menu_register_submit:hover {
   border-bottom: 1px solid #7925d3;
   color: #ebe7ef;
+}
+
+.input-fail {
+  border: 1px solid red;
+  box-shadow: rgba(255, 0, 0, 0.4) 0px 7px 29px 0px;
 }
 
 .backdrop {

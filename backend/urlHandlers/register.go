@@ -30,21 +30,28 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Registration password hash error on HandleRegister", err)
 	}
-	usernameOk, emailOk := validators.ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, email, password)
-	w.WriteHeader(http.StatusOK)
 
 	var callback = make(map[string]string)
-	if usernameOk {
-		callback["username"] = "already taken"
-		callback["registration"] = "fail"
+
+	var usernameOk, emailOk bool
+	if validators.ValidateEmail(email) && validators.ValidatePassword(password) {
+		usernameOk, emailOk = validators.ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, email, password)
+		if usernameOk {
+			callback["username"] = "already taken"
+			callback["registration"] = "fail"
+		}
+		if emailOk {
+			callback["email"] = "already taken"
+			callback["registration"] = "fail"
+		}
+		if !emailOk && !usernameOk {
+			callback["registration"] = "success"
+		}
+	} else {
+		callback["registration-data"] = "registration requirements not met!"
 	}
-	if emailOk {
-		callback["email"] = "already taken"
-		callback["registration"] = "fail"
-	}
-	if !emailOk && !usernameOk {
-		callback["registration"] = "success"
-	}
+	w.WriteHeader(http.StatusOK)
+
 	writeData, err := json.Marshal(callback)
 	if err != nil {
 		fmt.Println("Error marshaling obj in HandleRegister")
