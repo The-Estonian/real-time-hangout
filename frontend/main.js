@@ -5,6 +5,7 @@ import { Auth } from './menu/auth.js';
 
 const root = document.querySelector('#root');
 
+
 const menuContainer = Menu();
 const rootContainer = NewElement('div', 'container');
 const [loginContainer, loginOrRegister] = Auth();
@@ -12,7 +13,6 @@ const [loginContainer, loginOrRegister] = Auth();
 export const GiveAccess = () => {
   rootContainer.replaceWith(menuContainer);
 };
-
 rootContainer.appendChild(loginContainer);
 rootContainer.appendChild(loginOrRegister);
 

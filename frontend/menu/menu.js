@@ -1,4 +1,4 @@
-import { NewElement } from '../helpers/elements.js';
+import { NewElement, LoadContainer } from '../helpers/elements.js';
 export const Menu = () => {
   const menuContainer = NewElement('div', 'container_menu');
   const menuForumButton = NewElement('a', 'container_menu_button', 'Forum');
@@ -13,6 +13,11 @@ export const Menu = () => {
     'container_menu_button',
     'New Post'
   );
+
+  menuNewPostButton.addEventListener("click", ()=> {
+    const newPost = NewElement("span", "cotainer_menu_button", "new post content!")
+    LoadContainer(newPost);
+  })
 
   menuContainer.appendChild(menuForumButton);
   menuContainer.appendChild(menuNewPostButton);

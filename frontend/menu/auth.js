@@ -2,6 +2,7 @@ import { LoginMenu } from './login.js';
 import { RegisterMenu } from './register.js';
 import { NewElement } from '../helpers/elements.js';
 import { GiveAccess } from '../main.js';
+import { UpdateURL } from '../helpers/funcs.js';
 import {
   SendLoginData,
   SendRegisterData,

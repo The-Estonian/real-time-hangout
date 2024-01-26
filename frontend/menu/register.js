@@ -21,7 +21,7 @@ export const RegisterMenu = () => {
     'Register'
   );
   registerSubmit.setAttribute('disabled', 'true');
-
+  
   // Username -----------------------------------------------------------
   const registerUsernameTitle = NewElement(
     'span',
@@ -233,6 +233,7 @@ export const RegisterMenu = () => {
       psw = true;
       if (username && age && gender && fname && lname && email && psw) {
         registerSubmit.removeAttribute('disabled');
+        registerSubmit.classList.add('accepted');
       }
     }
   });

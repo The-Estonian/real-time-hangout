@@ -12,3 +12,10 @@ export const NewElement = (tag, eleClassName, eleText) => {
   }
   return newEle;
 };
+
+export const LoadContainer = (node) => {
+  const container = document.querySelector('#root');
+  console.log(container.lastElementChild);
+  // container.removeChild(container)
+  container.appendChild(node);
+};
