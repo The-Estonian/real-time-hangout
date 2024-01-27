@@ -56,7 +56,10 @@ export const Auth = () => {
           loginContainer.appendChild(loginUnsuccess);
         }
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        loginUnsuccess.innerHTML = error;
+        loginContainer.appendChild(loginUnsuccess);
+      });
   });
 
   // switch to send register user data to server and return register data

@@ -8,16 +8,14 @@ import (
 )
 
 func ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, email, password string) (bool, bool) {
-	checkUsername := false
-	checkEmail := false
 	username = cleanData.CleanName(username)
 	gender = cleanData.StandardizeString(gender)
 	firstName = cleanData.StandardizeString(firstName)
 	lastName = cleanData.StandardizeString(lastName)
 	email = cleanData.StandardizeString(email)
 
-	// check if username exists or return error
-	// check if email exists or return error
+	checkUsername := database.GetUsernameCheck(username)
+	checkEmail := database.GetEmailCheck(email)
 
 	if !checkUsername && !checkEmail {
 		database.SetUser(username, age, gender, firstName, lastName, email, password)

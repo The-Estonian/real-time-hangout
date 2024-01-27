@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"rtforum/cleanData"
 	"rtforum/validators"
 )
 
@@ -19,7 +20,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	username := loginData["username"]
+	username := cleanData.CleanName(loginData["username"])
 	password := loginData["password"]
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)

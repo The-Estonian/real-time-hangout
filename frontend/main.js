@@ -1,4 +1,5 @@
 // import { SocketConnection } from './sock/socket.js';
+import './main.css';
 import { NewElement } from './helpers/elements.js';
 import { Menu } from './menu/menu.js';
 import { Auth } from './menu/auth.js';

@@ -28,3 +28,15 @@ func CreateUsers() {
 	db.Exec(command)
 	db.Close()
 }
+
+func CreateSessions() {
+	database, err := sql.Open("sqlite3", "./database/forum.db")
+	helpers.CheckErr("CreateSessions", err)
+	command := "CREATE TABLE `session` (" +
+		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		"`user` INTEGER UNIQUE REFERENCES users(id), " +
+		"`hash` VARCHAR(255) NOT NULL, " +
+		"`date` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+	database.Exec(command)
+	database.Close()
+}

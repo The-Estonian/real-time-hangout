@@ -1,5 +1,7 @@
 ### FORUM PROJECT ###
 rtforum.db
+frontend/dist
+frontend/node_modules
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
