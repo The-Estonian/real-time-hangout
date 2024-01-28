@@ -25,7 +25,11 @@ func ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, em
 	return checkUsername, checkEmail
 }
 
-func ValidateLoginBeforeDB(username, password string) (bool, error) {
+func ValidateLoginBeforeDBAuth(username, password string) (bool, error) {
 	getPassword, err := database.GetPassword(username)
 	return helpers.CheckPassword(password, getPassword), err
+}
+
+func ValidateHashBeforeDB(username, hash string) {
+	database.SetUserSession(username, hash)
 }

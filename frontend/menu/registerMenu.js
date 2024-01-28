@@ -1,4 +1,4 @@
-import { NewElement } from '../helpers/elements.js';
+import { NewElement } from '../helpers/createElement.js';
 
 export const RegisterMenu = () => {
   let username,
@@ -21,7 +21,7 @@ export const RegisterMenu = () => {
     'Register'
   );
   registerSubmit.setAttribute('disabled', 'true');
-  
+
   // Username -----------------------------------------------------------
   const registerUsernameTitle = NewElement(
     'span',

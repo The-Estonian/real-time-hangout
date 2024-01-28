@@ -1,15 +1,8 @@
 package database
 
 import (
-	"database/sql"
 	"rtforum/helpers"
 )
-
-func DbConnection() *sql.DB {
-	db, err := sql.Open("sqlite3", "./database/rtforum.db")
-	helpers.CheckErr("SQL Connection", err)
-	return db
-}
 
 func SetUser(username, age, gender, firstName, lastName, email, password string) {
 	db := DbConnection()

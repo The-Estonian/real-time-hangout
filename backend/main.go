@@ -20,6 +20,7 @@ func main() {
 	mux.HandleFunc("/socket", urlHandlers.IndexSocket)
 	mux.HandleFunc("/login", urlHandlers.HandleLogin)
 	mux.HandleFunc("/register", urlHandlers.HandleRegister)
+	mux.HandleFunc("/checkstate", urlHandlers.HandleState)
 
 	fmt.Println("To Kill Server press Ctrl+C")
 	err := server.ListenAndServe()

@@ -6,6 +6,10 @@ import (
 	"net/http"
 	"rtforum/cleanData"
 	"rtforum/validators"
+	"strconv"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +20,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	var loginData map[string]string
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&loginData); err != nil {
+	if err := decoder.Decode(&loginData); err != nil || len(loginData["username"]) < 6 || len(loginData["password"]) < 6 {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
@@ -24,10 +28,18 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	password := loginData["password"]
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
-	authenticate, err := validators.ValidateLoginBeforeDB(username, password)
+	authenticate, err := validators.ValidateLoginBeforeDBAuth(username, password)
 	if authenticate {
 		callback["login"] = "success"
 		// create cookie and timers, send to DB and User
+		id := uuid.New()
+		exp := time.Now().Add(10 * time.Minute)
+		name := "rtForumCookie"
+		callback["rtforum-cookie-id"] = id.String()
+		callback["rtforum-cookie-exp"] = strconv.FormatInt(exp.UnixNano()/int64(time.Millisecond), 10)
+		callback["rtforum-cookie-name"] = name
+
+		validators.ValidateHashBeforeDB(username, id.String())
 	}
 	if !authenticate {
 		callback["login"] = "userPwNoMatch"

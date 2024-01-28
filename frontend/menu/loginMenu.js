@@ -1,4 +1,4 @@
-import { NewElement } from '../helpers/elements.js';
+import { NewElement } from '../helpers/createElement.js';
 
 export const LoginMenu = () => {
   const login = NewElement('div', 'container_menu_login');
@@ -6,6 +6,16 @@ export const LoginMenu = () => {
     'div',
     'container_menu_login_credentials_erro'
   );
+  let username,
+    password = false;
+
+  // Submit -----------------------------------------------------------
+  const loginSubmit = NewElement(
+    'button',
+    'container_menu_login_submit',
+    'Login'
+  );
+  loginSubmit.setAttribute('disabled', 'true');
 
   // Username -----------------------------------------------------------
   const loginUsernameTitle = NewElement(
@@ -20,11 +30,13 @@ export const LoginMenu = () => {
       loginUsername.classList.add('input-fail');
       loginErrMsg.innerHTML = 'Username must be at least 6 letters long!';
       login.insertBefore(loginErrMsg, login.childNodes[2]);
+      username = false;
     } else {
       loginUsername.classList.remove('input-fail');
       if (login.contains(loginErrMsg)) {
         login.removeChild(loginErrMsg);
       }
+      username = true;
     }
   });
 
@@ -41,20 +53,19 @@ export const LoginMenu = () => {
       loginPassword.classList.add('input-fail');
       loginErrMsg.innerHTML = 'Password must be at least 6 letters long!';
       login.insertBefore(loginErrMsg, login.childNodes[5]);
+      password = false;
     } else {
       loginPassword.classList.remove('input-fail');
       if (login.contains(loginErrMsg)) {
         login.removeChild(loginErrMsg);
       }
+      password = true;
+      if (username && password) {
+        loginSubmit.removeAttribute('disabled');
+        loginSubmit.classList.add('accepted');
+      }
     }
   });
-
-  // Submit -----------------------------------------------------------
-  const loginSubmit = NewElement(
-    'button',
-    'container_menu_login_submit',
-    'Login'
-  );
 
   login.appendChild(loginUsernameTitle);
   login.appendChild(loginUsername);

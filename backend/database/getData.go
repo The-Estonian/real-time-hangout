@@ -31,10 +31,10 @@ func GetUsernameCheck(username string) bool {
 func GetEmailCheck(email string) bool {
 	db := DbConnection()
 	var returnEmail string
-	err := db.QueryRow("SELECT username FROM users WHERE username=?", email).Scan(&returnEmail)
+	err := db.QueryRow("SELECT email FROM users WHERE email=?", email).Scan(&returnEmail)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			helpers.CheckErr("GetUsername", err)
+			helpers.CheckErr("GetEmailCheck", err)
 		}
 		return false
 	}

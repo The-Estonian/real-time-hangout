@@ -1,8 +1,7 @@
-import { LoginMenu } from './login.js';
-import { RegisterMenu } from './register.js';
-import { NewElement } from '../helpers/elements.js';
-import { GiveAccess } from '../main.js';
-import { UpdateURL } from '../helpers/funcs.js';
+import { LoginMenu } from './loginMenu.js';
+import { RegisterMenu } from './registerMenu.js';
+import { NewElement } from '../helpers/createElement.js';
+import { AuthenticateUser } from '../backendConnection/authentication.js';
 import {
   SendLoginData,
   SendRegisterData,
@@ -42,12 +41,21 @@ export const Auth = () => {
     }
     SendLoginData(userName, password)
       .then((data) => {
-        console.log(data);
         if (data.login === 'success') {
           if (loginContainer.contains(loginUnsuccess)) {
             loginContainer.removeChild(loginUnsuccess);
           }
-          GiveAccess();
+
+          // set browser Cookie
+          const cookieName = data['rtforum-cookie-name'];
+          const cookieValue = data['rtforum-cookie-id'];
+          const expiresAt = parseInt(data['rtforum-cookie-exp']);
+          const expirationDate = new Date(expiresAt);
+
+          document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=None; Secure`;
+
+          // give user access
+          AuthenticateUser();
         } else if (data.login === 'usernameError') {
           loginUnsuccess.innerHTML = 'User does not exist!';
           loginContainer.appendChild(loginUnsuccess);

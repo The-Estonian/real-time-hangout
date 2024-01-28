@@ -1,7 +1,6 @@
 package database
 
 import (
-	"database/sql"
 	"os"
 	"rtforum/helpers"
 )
@@ -14,8 +13,7 @@ func CreateDB() {
 }
 
 func CreateUsers() {
-	db, err := sql.Open("sqlite3", "./database/rtforum.db")
-	helpers.CheckErr("CreateUsers", err)
+	db := DbConnection()
 	command := "CREATE TABLE `users` (" +
 		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		"`username` VARCHAR(255) NOT NULL, " +
@@ -25,18 +23,26 @@ func CreateUsers() {
 		"`lastName` VARCHAR(255) NOT NULL, " +
 		"`email` VARCHAR(255) NOT NULL, " +
 		"`password` VARCHAR(255) NOT NULL)"
-	db.Exec(command)
-	db.Close()
+	_, err := db.Exec(command)
+	helpers.CheckErr("CreateUsers", err)
+	defer db.Close()
 }
 
 func CreateSessions() {
-	database, err := sql.Open("sqlite3", "./database/forum.db")
-	helpers.CheckErr("CreateSessions", err)
+	db := DbConnection()
 	command := "CREATE TABLE `session` (" +
 		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		"`user` INTEGER UNIQUE REFERENCES users(id), " +
 		"`hash` VARCHAR(255) NOT NULL, " +
 		"`date` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
-	database.Exec(command)
-	database.Close()
+	_, err := db.Exec(command)
+	helpers.CheckErr("CreateSessions", err)
+	defer db.Close()
+}
+
+func CreatePosts() {
+	db := DbConnection()
+	_, err := db.Exec("CREATE TABLE `posts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` VARCHAR(255) NOT NULL, `user` INTEGER NOT NULL REFERENCES users(id), `post` VARCHAR(255), `created` NOT NULL DEFAULT CURRENT_TIMESTAMP)")
+	helpers.CheckErr("CreatePosts", err)
+	defer db.Close()
 }
