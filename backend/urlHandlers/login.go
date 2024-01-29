@@ -24,22 +24,22 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	username := cleanData.CleanName(loginData["username"])
 	password := loginData["password"]
-	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
-	authenticate, err := validators.ValidateLoginBeforeDBAuth(username, password)
+	authenticate, err := validators.GetLoginBeforeDBAuth(username, password)
 	if authenticate {
 		callback["login"] = "success"
 		// create cookie and timers, send to DB and User
 		id := uuid.New()
-		exp := time.Now().Add(10 * time.Minute)
+		exp := time.Now().Add(10 * time.Second)
 		name := "rtForumCookie"
 		callback["rtforum-cookie-id"] = id.String()
 		callback["rtforum-cookie-exp"] = strconv.FormatInt(exp.UnixNano()/int64(time.Millisecond), 10)
 		callback["rtforum-cookie-name"] = name
 
-		validators.ValidateHashBeforeDB(username, id.String())
+		validators.SetHashBeforeDB(username, id.String())
 	}
 	if !authenticate {
 		callback["login"] = "userPwNoMatch"

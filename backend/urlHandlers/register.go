@@ -35,7 +35,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	var usernameOk, emailOk bool
 	if validators.ValidateEmail(email) && validators.ValidatePassword(password) {
-		usernameOk, emailOk = validators.ValidateRegistrationBeforeDB(username, age, gender, firstName, lastName, email, password)
+		usernameOk, emailOk = validators.SetRegistrationBeforeDB(username, age, gender, firstName, lastName, email, password)
 		if usernameOk {
 			callback["username"] = "already taken"
 			callback["registration"] = "fail"

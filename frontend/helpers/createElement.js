@@ -14,8 +14,8 @@ export const NewElement = (tag, eleClassName, eleText) => {
 };
 
 export const LoadContainer = (node) => {
-  const container = document.querySelector('#root');
-  console.log(container.lastElementChild);
-  // container.removeChild(container)
-  container.appendChild(node);
+  const container = document.querySelector('.container');
+  if (!container.contains(node)) {
+    container.appendChild(node);
+  }
 };

@@ -21,6 +21,7 @@ func main() {
 	mux.HandleFunc("/login", urlHandlers.HandleLogin)
 	mux.HandleFunc("/register", urlHandlers.HandleRegister)
 	mux.HandleFunc("/checkstate", urlHandlers.HandleState)
+	mux.HandleFunc("/newpost", urlHandlers.HandleNewPost)
 
 	fmt.Println("To Kill Server press Ctrl+C")
 	err := server.ListenAndServe()

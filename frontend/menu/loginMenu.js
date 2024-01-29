@@ -52,7 +52,7 @@ export const LoginMenu = () => {
     if (e.target.value.length < 6) {
       loginPassword.classList.add('input-fail');
       loginErrMsg.innerHTML = 'Password must be at least 6 letters long!';
-      login.insertBefore(loginErrMsg, login.childNodes[5]);
+      login.insertBefore(loginErrMsg, login.childNodes[4]);
       password = false;
     } else {
       loginPassword.classList.remove('input-fail');

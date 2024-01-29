@@ -19,3 +19,10 @@ func SetUserSession(user, hash string) {
 	helpers.CheckErr("SetUserSession", err)
 	defer db.Close()
 }
+
+func SetRemoveHash(hash string) {
+	db := DbConnection()
+	_, err := db.Exec("DELETE FROM session WHERE hash=?", hash)
+	helpers.CheckErr("SetRemoveSession", err)
+	defer db.Close()
+}

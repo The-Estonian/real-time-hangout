@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"rtforum/validators"
 )
 
 func HandleState(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +15,22 @@ func HandleState(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
-	callback["login"] = "success"
+
+	var checkstate map[string]string
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&checkstate); err != nil || len(checkstate["hash"]) < 1 {
+		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		return
+	}
+	exists, user := validators.GetHashBeforeDB(checkstate["hash"])
+	if exists {
+		callback["login"] = "success"
+		callback["user"] = user
+	} else {
+		callback["login"] = "fail"
+		callback["user"] = "logout"
+	}
+
 	writeData, err := json.Marshal(callback)
 	if err != nil {
 		fmt.Println("Error marshaling callback in HandleState")

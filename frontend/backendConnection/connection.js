@@ -5,6 +5,7 @@ const modal = NewElement('div', 'backdrop');
 const spinner = NewElement('div', 'loader');
 modal.appendChild(spinner);
 
+// Submit Login data and handle
 export const SendLoginData = async (username, password) => {
   root.appendChild(modal);
   try {
@@ -35,6 +36,7 @@ export const SendLoginData = async (username, password) => {
   }
 };
 
+// Submit Registration data and handle
 export const SendRegisterData = async (
   username,
   age,
@@ -79,6 +81,7 @@ export const SendRegisterData = async (
   }
 };
 
+// Get user state and handle
 export const GetState = async (hash) => {
   root.appendChild(modal);
   try {
@@ -99,12 +102,45 @@ export const GetState = async (hash) => {
     });
     if (!response.ok) {
       root.removeChild(modal);
-      throw new Error('No response after hashcheck');
+      throw new Error('No response after get state');
     }
     root.removeChild(modal);
     return response.json();
   } catch (err) {
     root.removeChild(modal);
-    throw new Error('No response after hashcheck');
+    throw new Error('No response after get state');
+  }
+};
+
+// Submit user post and handle
+export const SendNewPost = async (hash, title, post) => {
+  root.appendChild(modal);
+  try {
+    const response = await fetch('http://localhost:8080/newpost', {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify({
+        hash: hash,
+        title: title,
+        post: post,
+      }), // body data type must match "Content-Type" header
+    });
+    if (!response.ok) {
+      root.removeChild(modal);
+      throw new Error('No response after post');
+    }
+    root.removeChild(modal);
+    return response.json();
+  } catch (err) {
+    root.removeChild(modal);
+    throw new Error('No response after post');
   }
 };

@@ -41,3 +41,33 @@ func GetEmailCheck(email string) bool {
 	defer db.Close()
 	return true
 }
+
+func GetUserSession(hash string) (bool, string, string) {
+	db := DbConnection()
+	var user string
+	var date string
+	err := db.QueryRow("SELECT user, date FROM session WHERE hash=?", hash).Scan(&user, &date)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			helpers.CheckErr("GetUserSession", err)
+		}
+		return false, user, date
+	}
+	defer db.Close()
+
+	return true, user, date
+}
+
+func GetUserIdByUsername(username string) string {
+	db := DbConnection()
+	var userId string
+	err := db.QueryRow("SELECT id FROM users WHERE username=?", username).Scan(&userId)
+	defer db.Close()
+	if err != nil {
+		if err != sql.ErrNoRows {
+			helpers.CheckErr("GetUserIdByUsername", err)
+		}
+		return "Username not found"
+	}
+	return userId
+}

@@ -105,5 +105,8 @@ export const Auth = () => {
       })
       .catch((error) => console.error(error));
   });
-  return [loginContainer, loginOrRegister];
+  const rootContainer = NewElement('div', 'container');
+  rootContainer.appendChild(loginContainer);
+  rootContainer.appendChild(loginOrRegister);
+  return rootContainer;
 };
