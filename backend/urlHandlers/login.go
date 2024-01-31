@@ -33,7 +33,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		callback["login"] = "success"
 		// create cookie and timers, send to DB and User
 		id := uuid.New()
-		exp := time.Now().Add(10 * time.Second)
+		exp := time.Now().Add(20 * time.Second)
 		name := "rtForumCookie"
 		callback["rtforum-cookie-id"] = id.String()
 		callback["rtforum-cookie-exp"] = strconv.FormatInt(exp.UnixNano()/int64(time.Millisecond), 10)

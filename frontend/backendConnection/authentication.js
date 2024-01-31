@@ -4,20 +4,23 @@ import { GetState } from './connection.js';
 import { Menu } from '../menu/menu.js';
 import { Auth } from '../menu/auth.js';
 
-export const AuthenticateUser = () => {
-  const root = document.querySelector('#root');
-  const content = Menu();
-  let getCookie = GetCookie('rtForumCookie');
-  if (getCookie != undefined) {
-    GetState(getCookie).then((data) => {
-      if (data['login'] == 'success') {
-        root.childNodes[0].removeChild(root.childNodes[0].childNodes[1]);
-        root.childNodes[0].childNodes[0].replaceWith(content);
-      } else if (data['login'] == 'fail' && data['user'] == 'logout') {
-        DeleteCookie('rtForumCookie');
+export const AuthenticateUser = (node = null) => {
+  const container = document.querySelector('.container');
+  const menuContent = Menu();
+
+  GetState().then((data) => {
+    if (data['login'] == 'success') {
+      console.log('Logged in!');
+      container.innerHTML = '';
+      container.appendChild(menuContent);
+      if (node != null) {
+        container.appendChild(node);
       }
-    });
-  } else {
-    root.childNodes[0].replaceWith(Auth());
-  }
+    } else if (data['login'] == 'fail' && data['user'] == 'logout') {
+      DeleteCookie('rtForumCookie');
+    } else {
+      container.innerHTML = '';
+      container.appendChild(Auth());
+    }
+  });
 };

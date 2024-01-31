@@ -51,7 +51,7 @@ func GetHashBeforeDB(hash string) (bool, string) {
 	if exists {
 		layout := "2006-01-02 15:04:05"
 		hashDate, _ := time.Parse(layout, date)
-		currTime := time.Now().Add(time.Second * -10)
+		currTime := time.Now().Add(time.Second * -20)
 		if currTime.Sub(hashDate) > 0 {
 			fmt.Println("Hash expired, Executing delete")
 			SetRemoveHashBeforeDB(hash)
@@ -60,4 +60,10 @@ func GetHashBeforeDB(hash string) (bool, string) {
 		return true, user
 	}
 	return false, "0"
+}
+
+// adjust data before deleting from DB
+func SetNewPostBeforeDB(user, title, post string) {
+	title = cleanData.CleanName(title)
+	database.SetNewPost(user, title, post)
 }

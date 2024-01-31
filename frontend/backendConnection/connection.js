@@ -1,4 +1,5 @@
 import { NewElement } from '../helpers/createElement.js';
+import { GetCookie } from '../helpers/getCookie.js';
 
 const root = document.querySelector('#root');
 const modal = NewElement('div', 'backdrop');
@@ -82,7 +83,7 @@ export const SendRegisterData = async (
 };
 
 // Get user state and handle
-export const GetState = async (hash) => {
+export const GetState = async () => {
   root.appendChild(modal);
   try {
     const response = await fetch('http://localhost:8080/checkstate', {
@@ -97,7 +98,8 @@ export const GetState = async (hash) => {
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify({
-        hash,
+        hash:
+          GetCookie('rtForumCookie') == null ? '0' : GetCookie('rtForumCookie'),
       }), // body data type must match "Content-Type" header
     });
     if (!response.ok) {
@@ -108,12 +110,12 @@ export const GetState = async (hash) => {
     return response.json();
   } catch (err) {
     root.removeChild(modal);
-    throw new Error('No response after get state');
+    return 'noCookie';
   }
 };
 
 // Submit user post and handle
-export const SendNewPost = async (hash, title, post) => {
+export const SendNewPost = async (title, post) => {
   root.appendChild(modal);
   try {
     const response = await fetch('http://localhost:8080/newpost', {
@@ -128,10 +130,10 @@ export const SendNewPost = async (hash, title, post) => {
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify({
-        hash: hash,
         title: title,
         post: post,
       }), // body data type must match "Content-Type" header
+      credentials: 'include',
     });
     if (!response.ok) {
       root.removeChild(modal);

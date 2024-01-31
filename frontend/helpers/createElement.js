@@ -13,9 +13,3 @@ export const NewElement = (tag, eleClassName, eleText) => {
   return newEle;
 };
 
-export const LoadContainer = (node) => {
-  const container = document.querySelector('.container');
-  if (!container.contains(node)) {
-    container.appendChild(node);
-  }
-};

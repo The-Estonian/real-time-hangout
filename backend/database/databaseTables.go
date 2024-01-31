@@ -42,7 +42,12 @@ func CreateSessions() {
 
 func CreatePosts() {
 	db := DbConnection()
-	_, err := db.Exec("CREATE TABLE `posts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` VARCHAR(255) NOT NULL, `user` INTEGER NOT NULL REFERENCES users(id), `post` VARCHAR(255), `created` NOT NULL DEFAULT CURRENT_TIMESTAMP)")
+	command := "CREATE TABLE `posts` (" +
+		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		"`user` INTEGER NOT NULL REFERENCES users(id), " +
+		"`title` VARCHAR(255) NOT NULL, `post` VARCHAR(255), " +
+		"`created` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+	_, err := db.Exec(command)
 	helpers.CheckErr("CreatePosts", err)
 	defer db.Close()
 }

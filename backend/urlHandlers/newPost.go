@@ -21,20 +21,20 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
-	exists, user := validators.GetHashBeforeDB(newPostData["hash"])
-	if exists {
-		title := newPostData["title"]
-		post := newPostData["post"]
-
-		// TODO send to DB
-		fmt.Println(user)
-		fmt.Println(title)
-		fmt.Println(post)
-
-		callback["post"] = "accepted"
-	} else {
-		callback["user"] = "false"
+	cookie, err := r.Cookie("rtForumCookie")
+	if err != nil {
+		fmt.Println(err)
 		callback["post"] = "rejected"
+	} else {
+		exists, user := validators.GetHashBeforeDB(cookie.Value)
+		if exists {
+			title := newPostData["title"]
+			post := newPostData["post"]
+			validators.SetNewPostBeforeDB(user, title, post)
+			callback["post"] = "accepted"
+		} else {
+			callback["user"] = "false"
+		}
 	}
 	writeData, err := json.Marshal(callback)
 	if err != nil {

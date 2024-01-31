@@ -55,7 +55,9 @@ export const Auth = () => {
           document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=None; Secure`;
 
           // give user access
+          console.log("Running auth after login");
           AuthenticateUser();
+
         } else if (data.login === 'usernameError') {
           loginUnsuccess.innerHTML = 'User does not exist!';
           loginContainer.appendChild(loginUnsuccess);

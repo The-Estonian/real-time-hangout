@@ -26,3 +26,10 @@ func SetRemoveHash(hash string) {
 	helpers.CheckErr("SetRemoveSession", err)
 	defer db.Close()
 }
+
+func SetNewPost(user, title, post string) {
+	db := DbConnection()
+	_, err := db.Exec("INSERT INTO posts (user, title, post) VALUES (?, ?, ?)", user, title, post)
+	helpers.CheckErr("SetNewPost", err)
+	defer db.Close()
+}

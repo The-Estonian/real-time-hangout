@@ -1,6 +1,5 @@
 import { NewElement } from '../helpers/createElement.js';
 import { SendNewPost } from '../backendConnection/connection.js';
-import { GetCookie } from '../helpers/getCookie.js';
 import { AuthenticateUser } from '../backendConnection/authentication.js';
 
 export const NewPost = () => {
@@ -39,11 +38,10 @@ export const NewPost = () => {
   postSubmit.addEventListener('click', (e) => {
     let currTitle = titleContent.value;
     let currPost = postContent.value;
-    let getCookie = GetCookie('rtForumCookie');
-    SendNewPost(getCookie, currTitle, currPost).then((data) => {
+    SendNewPost(currTitle, currPost).then((data) => {
       if (data['post'] == 'accepted') {
-        console.log(data);
-      } else if (data['user'] == 'false') {
+        // forward to forum
+      } else if (data['post'] == 'rejected') {
         AuthenticateUser();
       }
     });
