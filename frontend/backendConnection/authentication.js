@@ -9,6 +9,7 @@ export const AuthenticateUser = (node = null) => {
   const menuContent = Menu();
 
   GetState().then((data) => {
+    console.log(data);
     if (data['login'] == 'success') {
       console.log('Logged in!');
       container.innerHTML = '';
@@ -16,8 +17,10 @@ export const AuthenticateUser = (node = null) => {
       if (node != null) {
         container.appendChild(node);
       }
-    } else if (data['login'] == 'fail' && data['user'] == 'logout') {
+    } else if (data['login'] == 'fail') {
       DeleteCookie('rtForumCookie');
+      container.innerHTML = '';
+      container.appendChild(Auth());
     } else {
       container.innerHTML = '';
       container.appendChild(Auth());

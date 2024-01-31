@@ -140,7 +140,7 @@ html {
       }
     }
   }
-  &_postContent{
+  &_postContent {
     display: flex;
     flex-direction: column;
     margin: auto;
@@ -148,22 +148,36 @@ html {
     font-size: 1.2rem;
     text-align: center;
     margin-top: 10rem;
-    &_submit{
+    &_submit {
       display: flex;
-        margin: auto;
-        color: white;
-        text-decoration: none;
-        padding: 0.5rem;
-        background: none;
-        border: none;
-        font-size: 1.2rem;
+      margin: auto;
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        border-bottom: 1px solid #7925d3;
+        color: #ebe7ef;
+      }
+    }
+    &_categories {
+      &_title{
+        text-align: center;
+      }
+      &_catImg {
+        height: 3rem;
+        width: 3rem;
+        margin: 0.1rem;
+        border-radius: 50%;
         cursor: pointer;
-        border-bottom: 1px solid transparent;
-        transition: all 0.2s ease-in-out;
-        &:hover {
-          border-bottom: 1px solid #7925d3;
-          color: #ebe7ef;
-        }
+        transition: 1s;
+        border: 2px solid transparent;
+      }
     }
   }
 }
@@ -173,11 +187,16 @@ html {
   box-shadow: rgba(255, 0, 0, 0.4) 0px 7px 29px 0px;
 }
 
-.accepted{
+.selectCat {
+  box-shadow: rgba(255, 255, 255, 0.2) 0px 7px 29px 0px;
+  border: 2px solid white;
+}
+
+.accepted {
   color: rgb(117, 190, 8);
 }
 
-.denied{
+.denied {
   color: red;
 }
 

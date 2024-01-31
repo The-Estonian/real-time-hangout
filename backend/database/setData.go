@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"rtforum/helpers"
 )
 
@@ -27,9 +28,18 @@ func SetRemoveHash(hash string) {
 	defer db.Close()
 }
 
-func SetNewPost(user, title, post string) {
+func SetNewPost(user, title, post string) string {
 	db := DbConnection()
-	_, err := db.Exec("INSERT INTO posts (user, title, post) VALUES (?, ?, ?)", user, title, post)
+	var postId string
+	err := db.QueryRow("INSERT INTO posts (user, title, post) VALUES (?, ?, ?) returning id", user, title, post).Scan(&postId)
 	helpers.CheckErr("SetNewPost", err)
 	defer db.Close()
+	return postId
+}
+
+func SetCategories(postId string, categories []string) {
+	for x := 0; x < len(categories); x++ {
+		fmt.Println("PostId: ", postId, "CategoryId: ", categories[x])
+	}
+	// enter the categories to the list
 }

@@ -22,13 +22,11 @@ func HandleState(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	exists, user := validators.GetHashBeforeDB(checkstate["hash"])
+	exists, _ := validators.GetHashBeforeDB(checkstate["hash"])
 	if exists {
 		callback["login"] = "success"
-		callback["user"] = user
 	} else {
 		callback["login"] = "fail"
-		callback["user"] = "logout"
 	}
 
 	writeData, err := json.Marshal(callback)

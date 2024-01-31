@@ -21,6 +21,11 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+
+        type: 'asset/resource',
+      },
     ],
   },
   devServer: {
@@ -30,6 +35,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
       filename: 'index.html',
+      favicon: path.resolve(__dirname, 'fav.png'),
     }),
   ],
 };

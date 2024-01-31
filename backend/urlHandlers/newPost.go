@@ -19,6 +19,7 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
+	fmt.Println("New post: ", newPostData)
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
 	cookie, err := r.Cookie("rtForumCookie")
@@ -30,7 +31,8 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 		if exists {
 			title := newPostData["title"]
 			post := newPostData["post"]
-			validators.SetNewPostBeforeDB(user, title, post)
+			categories := newPostData["categories"]
+			validators.SetNewPostBeforeDB(user, title, post, categories)
 			callback["post"] = "accepted"
 		} else {
 			callback["user"] = "false"

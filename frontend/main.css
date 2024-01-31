@@ -159,10 +159,27 @@ html {
   border-bottom: 1px solid #7925d3;
   color: #ebe7ef;
 }
+.container_postContent_categories_title {
+  text-align: center;
+}
+.container_postContent_categories_catImg {
+  height: 3rem;
+  width: 3rem;
+  margin: 0.1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 1s;
+  border: 2px solid transparent;
+}
 
 .input-fail {
   border: 1px solid red;
   box-shadow: rgba(255, 0, 0, 0.4) 0px 7px 29px 0px;
+}
+
+.selectCat {
+  box-shadow: rgba(255, 255, 255, 0.2) 0px 7px 29px 0px;
+  border: 2px solid white;
 }
 
 .accepted {

@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"encoding/json"
 	"fmt"
 	"rtforum/cleanData"
 	"rtforum/database"
@@ -63,7 +64,10 @@ func GetHashBeforeDB(hash string) (bool, string) {
 }
 
 // adjust data before deleting from DB
-func SetNewPostBeforeDB(user, title, post string) {
+func SetNewPostBeforeDB(user, title, post, categories string) {
 	title = cleanData.CleanName(title)
-	database.SetNewPost(user, title, post)
+	var catArray []string
+	json.Unmarshal([]byte(categories), &catArray)
+	postId := database.SetNewPost(user, title, post)
+	database.SetCategories(postId, catArray)
 }

@@ -115,7 +115,8 @@ export const GetState = async () => {
 };
 
 // Submit user post and handle
-export const SendNewPost = async (title, post) => {
+export const SendNewPost = async (title, post, categories) => {
+  // console.log(JSON.stringify(categories));
   root.appendChild(modal);
   try {
     const response = await fetch('http://localhost:8080/newpost', {
@@ -132,6 +133,7 @@ export const SendNewPost = async (title, post) => {
       body: JSON.stringify({
         title: title,
         post: post,
+        categories: JSON.stringify(categories),
       }), // body data type must match "Content-Type" header
       credentials: 'include',
     });
@@ -142,7 +144,7 @@ export const SendNewPost = async (title, post) => {
     root.removeChild(modal);
     return response.json();
   } catch (err) {
-    root.removeChild(modal);
+    // root.removeChild(modal);
     throw new Error('No response after post');
   }
 };
