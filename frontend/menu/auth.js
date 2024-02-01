@@ -1,11 +1,10 @@
 import { LoginMenu } from './loginMenu.js';
 import { RegisterMenu } from './registerMenu.js';
 import { NewElement } from '../helpers/createElement.js';
-import { AuthenticateUser } from '../backendConnection/authentication.js';
-import {
-  SendLoginData,
-  SendRegisterData,
-} from '../backendConnection/connection.js';
+import { CheckUserState } from '../backendConnection/checkState.js';
+import { Forum } from '../pages/forum.js';
+import { SendLoginData } from '../backendConnection/sendLoginData';
+import { SendRegisterData } from '../backendConnection/sendRegisterData';
 
 export const Auth = () => {
   const loginContainer = LoginMenu();
@@ -55,9 +54,7 @@ export const Auth = () => {
           document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=None; Secure`;
 
           // give user access
-          console.log("Running auth after login");
-          AuthenticateUser();
-
+          CheckUserState(Forum());
         } else if (data.login === 'usernameError') {
           loginUnsuccess.innerHTML = 'User does not exist!';
           loginContainer.appendChild(loginUnsuccess);

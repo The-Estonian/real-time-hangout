@@ -37,7 +37,7 @@ html {
   cursor: pointer;
   border-bottom: 1px solid transparent;
 }
-.container_menu_button::after {
+.container_menu_button:not(:nth-last-child(2))::after {
   content: "";
   height: 80%;
   position: relative;
@@ -168,8 +168,34 @@ html {
   margin: 0.1rem;
   border-radius: 50%;
   cursor: pointer;
-  transition: 1s;
+  transition: 0.15s;
   border: 2px solid transparent;
+}
+.container_forum {
+  display: flex;
+  flex-direction: column;
+}
+.container_forum_post {
+  display: flex;
+  margin: auto;
+  margin-top: 1rem;
+  cursor: pointer;
+  width: 80%;
+  border: 1px solid transparent;
+  box-shadow: #7925d3 0px 0px 16px;
+  border-radius: 0 1rem 0 1rem;
+  transition: 1s;
+}
+.container_forum_post:hover {
+  border: 1px solid white;
+}
+.container_forum_post_title {
+  padding-bottom: 2rem;
+  padding-top: 0.1rem;
+  margin-left: 1rem;
+}
+.container_forum_post_content {
+  margin: auto;
 }
 
 .input-fail {

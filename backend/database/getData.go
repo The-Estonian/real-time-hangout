@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"rtforum/helpers"
+	"rtforum/structs"
 )
 
 func GetPassword(username string) (string, error) {
@@ -70,4 +71,10 @@ func GetUserIdByUsername(username string) string {
 		return "Username not found"
 	}
 	return userId
+}
+
+func GetAllPosts() []structs.Post {
+	// TODO
+	var AllPosts []structs.Post
+	return AllPosts
 }

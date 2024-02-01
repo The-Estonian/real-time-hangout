@@ -1,6 +1,7 @@
 import { NewElement } from '../helpers/createElement.js';
-import { SendNewPost } from '../backendConnection/connection.js';
-import { AuthenticateUser } from '../backendConnection/authentication.js';
+import { SendNewPost } from '../backendConnection/sendNewPost.js';
+import { CheckUserState } from '../backendConnection/checkState.js';
+import { Forum } from './forum.js';
 
 import blue from '../categories/blue.png';
 import green from '../categories/green.png';
@@ -120,8 +121,9 @@ export const NewPost = () => {
     SendNewPost(currTitle, currPost, catList).then((data) => {
       if (data['post'] == 'accepted') {
         // forward to forum
+        CheckUserState(Forum());
       } else if (data['post'] == 'rejected') {
-        AuthenticateUser();
+        CheckUserState();
       }
     });
   });

@@ -12,7 +12,7 @@ func CreateDB() {
 	os.Create("./database/rtforum.db")
 }
 
-func CreateUsers() {
+func CreateUserTable() {
 	db := DbConnection()
 	command := "CREATE TABLE `users` (" +
 		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -28,11 +28,11 @@ func CreateUsers() {
 	defer db.Close()
 }
 
-func CreateSessions() {
+func CreateSessionTable() {
 	db := DbConnection()
 	command := "CREATE TABLE `session` (" +
 		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-		"`user` INTEGER UNIQUE REFERENCES users(id), " +
+		"`user` INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE, " +
 		"`hash` VARCHAR(255) NOT NULL, " +
 		"`date` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
 	_, err := db.Exec(command)
@@ -40,13 +40,34 @@ func CreateSessions() {
 	defer db.Close()
 }
 
-func CreatePosts() {
+func CreatePostTable() {
 	db := DbConnection()
 	command := "CREATE TABLE `posts` (" +
 		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-		"`user` INTEGER NOT NULL REFERENCES users(id), " +
+		"`user` INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, " +
 		"`title` VARCHAR(255) NOT NULL, `post` VARCHAR(255), " +
 		"`created` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+	_, err := db.Exec(command)
+	helpers.CheckErr("CreatePosts", err)
+	defer db.Close()
+}
+
+func CreateCategoryTable() {
+	db := DbConnection()
+	command := "CREATE TABLE `category` (" +
+		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		"`category` VARCHAR(255) NOT NULL)"
+	_, err := db.Exec(command)
+	helpers.CheckErr("CreatePosts", err)
+	defer db.Close()
+}
+
+func CreatePostCategoryTable() {
+	db := DbConnection()
+	command := "CREATE TABLE `post_category_list` (" +
+		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		"`post_category_from_category` INTEGER NOT NULL REFERENCES category(id), " +
+		"`post_id_from_posts` INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE)"
 	_, err := db.Exec(command)
 	helpers.CheckErr("CreatePosts", err)
 	defer db.Close()

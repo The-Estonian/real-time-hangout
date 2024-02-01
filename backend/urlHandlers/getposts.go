@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"rtforum/validators"
 )
 
-func HandleState(w http.ResponseWriter, r *http.Request) {
+func HandleGetPosts(w http.ResponseWriter, r *http.Request) {
 	CorsEnabler(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
@@ -18,19 +17,13 @@ func HandleState(w http.ResponseWriter, r *http.Request) {
 
 	cookie, err := r.Cookie("rtForumCookie")
 	if err != nil {
-		callback["login"] = "fail"
+		callback["authorization"] = "fail"
 	} else {
-		exists, _ := validators.GetHashBeforeDB(cookie.Value)
-		if exists {
-			callback["login"] = "success"
-		} else {
-			callback["login"] = "fail"
-		}
+		fmt.Println("Getting all posts as User: ", cookie.Value)
 	}
-
 	writeData, err := json.Marshal(callback)
 	if err != nil {
-		fmt.Println("Error marshaling callback in HandleState")
+		fmt.Println("Error marshaling callback in HandleGetPosts")
 	}
 	w.Write(writeData)
 }

@@ -8,7 +8,8 @@ import (
 )
 
 func HandleNewPost(w http.ResponseWriter, r *http.Request) {
-	CorsEnabler(&w)
+	// fmt.Println(r)
+	CorsEnabler(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -19,7 +20,6 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("New post: ", newPostData)
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
 	cookie, err := r.Cookie("rtForumCookie")

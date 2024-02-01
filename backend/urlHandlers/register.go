@@ -9,7 +9,7 @@ import (
 )
 
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
-	CorsEnabler(&w)
+	CorsEnabler(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return

@@ -21,19 +21,32 @@ func Create() {
 		CreateDB()
 		fmt.Println("Database Created!")
 
-		CreateUsers()
+		CreateUserTable()
 		fmt.Println("User Table Created!")
 
-		CreateSessions()
+		CreateSessionTable()
 		fmt.Println("Session Table Created!")
 
-		CreatePosts()
+		CreatePostTable()
 		fmt.Println("Post Table Created!")
+
+		CreateCategoryTable()
+		fmt.Println("Category Table Created!")
+
+		CreatePostCategoryTable()
+		fmt.Println("Post Category Table Created!")
+
+		AppendDummyData()
+		fmt.Println("DummyData injected!")
 	}
 }
 
 func DbConnection() *sql.DB {
 	db, err := sql.Open("sqlite3", "./database/rtforum.db")
 	helpers.CheckErr("DbConnection", err)
+
+	_, err = db.Exec("PRAGMA foreign_keys = ON;")
+	helpers.CheckErr("DbConnection", err)
+
 	return db
 }

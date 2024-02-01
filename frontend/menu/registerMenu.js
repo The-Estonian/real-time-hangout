@@ -81,7 +81,7 @@ export const RegisterMenu = () => {
   const registerGenderTitle = NewElement(
     'span',
     'container_menu_register_credentials',
-    'Gender'
+    'Chromosomes'
   );
   const registerGender = NewElement(
     'input',
@@ -91,11 +91,11 @@ export const RegisterMenu = () => {
 
   registerGender.addEventListener('input', (e) => {
     if (
-      e.target.value != 'With Sausage' &&
-      e.target.value != 'Without Sausage'
+      e.target.value != 'XX' &&
+      e.target.value != 'XY'
     ) {
       registerGender.classList.add('input-fail');
-      registerErrMsg.innerHTML = 'With Sausage or Without Sausage';
+      registerErrMsg.innerHTML = 'XX or XY';
       register.insertBefore(registerErrMsg, register.childNodes[6]);
     } else {
       registerGender.classList.remove('input-fail');

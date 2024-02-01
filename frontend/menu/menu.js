@@ -1,6 +1,6 @@
 import { NewElement } from '../helpers/createElement.js';
 import { DeleteCookie } from '../helpers/delCookie.js';
-import { AuthenticateUser } from '../backendConnection/authentication.js';
+import { CheckUserState } from '../backendConnection/checkState.js';
 import { NewPost } from '../pages/newPost.js';
 import { Forum } from '../pages/forum.js';
 
@@ -24,21 +24,27 @@ export const Menu = () => {
     'container_menu_button',
     'New Post'
   );
+  const menuMessageButton = NewElement(
+    'button',
+    'container_menu_button',
+    'Messages'
+  );
 
   menuContainer.appendChild(menuForumButton);
   menuContainer.appendChild(menuNewPostButton);
+  menuContainer.appendChild(menuMessageButton);
   menuContainer.appendChild(menuLogoutButton);
 
   menuForumButton.addEventListener('click', (e) => {
-    AuthenticateUser(Forum());
+    CheckUserState(Forum());
   });
 
   menuLogoutButton.addEventListener('click', (e) => {
     DeleteCookie('rtForumCookie');
-    AuthenticateUser();
+    CheckUserState();
   });
   menuNewPostButton.addEventListener('click', () => {
-    AuthenticateUser(NewPost());
+    CheckUserState(NewPost());
   });
 
   return menuContainer;
