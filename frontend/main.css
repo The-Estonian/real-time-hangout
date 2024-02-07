@@ -129,6 +129,17 @@ html {
   border-bottom: 1px solid transparent;
   transition: all 0.2s ease-in-out;
 }
+.container_menu_login_submit_switch, .container_menu_register_submit_switch {
+  display: flex;
+  font-size: 0.8rem;
+  margin: auto;
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 1rem;
+}
 .container_menu_login_submit:hover, .container_menu_register_submit:hover {
   border-bottom: 1px solid #7925d3;
   color: #ebe7ef;
@@ -179,23 +190,37 @@ html {
   display: flex;
   margin: auto;
   margin-top: 1rem;
+  height: 4rem;
   cursor: pointer;
   width: 80%;
   border: 1px solid transparent;
   box-shadow: #7925d3 0px 0px 16px;
   border-radius: 0 1rem 0 1rem;
   transition: 1s;
+  overflow: hidden;
 }
 .container_forum_post:hover {
   border: 1px solid white;
 }
 .container_forum_post_title {
-  padding-bottom: 2rem;
-  padding-top: 0.1rem;
-  margin-left: 1rem;
+  position: relative;
+  left: -6rem;
+  bottom: 13rem;
+  padding: 9rem;
+  background: white;
+  overflow: hidden;
+  transform: rotate(-30deg);
+}
+.container_forum_post_title_content {
+  position: relative;
+  top: 3rem;
+  left: -5rem;
+  color: #7925d3;
+  transform: rotate(30deg);
 }
 .container_forum_post_content {
   margin: auto;
+  overflow: hidden;
 }
 
 .input-fail {
@@ -222,7 +247,7 @@ html {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.8);
   z-index: 10;
 }
 
@@ -230,16 +255,23 @@ html {
   display: inline-block;
   position: absolute;
   left: 45%;
-  top: 35%;
-  width: 10rem;
+  top: 30%;
+  width: 12.5rem;
   height: 10rem;
+  text-align: center;
+}
+.loader_text {
+  position: relative;
+  top: 72%;
+  margin: auto;
+  font-size: 1.2rem;
 }
 
 .loader:after {
   content: " ";
   display: block;
-  width: 10rem;
-  height: 10rem;
+  width: 12rem;
+  height: 12rem;
   margin: 1px;
   border-radius: 50%;
   border: 5px solid #36007c;

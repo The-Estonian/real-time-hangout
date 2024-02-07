@@ -5,7 +5,6 @@ import { NewPost } from '../pages/newPost.js';
 import { Forum } from '../pages/forum.js';
 
 export const Menu = () => {
-  const container = document.querySelector('.container');
   const menuContainer = NewElement('div', 'container_menu');
   const menuForumButton = NewElement(
     'button',
@@ -36,15 +35,17 @@ export const Menu = () => {
   menuContainer.appendChild(menuLogoutButton);
 
   menuForumButton.addEventListener('click', (e) => {
-    CheckUserState(Forum());
+    console.log("Forum button clicked");
+    CheckUserState(Forum(), true);
   });
-
+  
   menuLogoutButton.addEventListener('click', (e) => {
     DeleteCookie('rtForumCookie');
     CheckUserState();
   });
   menuNewPostButton.addEventListener('click', () => {
-    CheckUserState(NewPost());
+    CheckUserState(NewPost(), true);
+    console.log("New post clicked");
   });
 
   return menuContainer;

@@ -74,7 +74,38 @@ func GetUserIdByUsername(username string) string {
 }
 
 func GetAllPosts() []structs.Post {
-	// TODO
+	db := DbConnection()
 	var AllPosts []structs.Post
+	command := "SELECT * FROM posts ORDER BY id DESC"
+	rows, err := db.Query(command)
+	helpers.CheckErr("GetAllPosts", err)
+	for rows.Next() {
+		var singlePost structs.Post
+		rows.Scan(&singlePost.Id,
+			&singlePost.User,
+			&singlePost.Title,
+			&singlePost.Post,
+			&singlePost.Created)
+		singlePost.Categories = GetAllCategoriesForPost(singlePost.Id)
+		AllPosts = append(AllPosts, singlePost)
+	}
+	rows.Close()
+	defer db.Close()
 	return AllPosts
+}
+
+func GetAllCategoriesForPost(postId string) []structs.Category {
+	db := DbConnection()
+	var AllCategories []structs.Category
+	command := "SELECT * FROM post_category_list WHERE post_id_from_posts=?"
+	rows, err := db.Query(command, postId)
+	helpers.CheckErr("GetAllCategoriesForPost", err)
+	for rows.Next() {
+		var singleCat structs.Category
+		rows.Scan(&singleCat.Id, &singleCat.Category, &singleCat.CategoryPost)
+		AllCategories = append(AllCategories, singleCat)
+	}
+	rows.Close()
+
+	return AllCategories
 }

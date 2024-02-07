@@ -6,6 +6,7 @@ import (
 	"rtforum/cleanData"
 	"rtforum/database"
 	"rtforum/helpers"
+	"rtforum/structs"
 	"time"
 )
 
@@ -76,6 +77,6 @@ func SetNewPostBeforeDB(user, title, post, categories string) {
 	}
 }
 
-func GetAllPostsBeforeDB(){
-	
+func GetAllPostsBeforeDB() []structs.Post {
+	return database.GetAllPosts()
 }

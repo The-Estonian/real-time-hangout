@@ -3,6 +3,8 @@ import { NewElement } from '../helpers/createElement.js';
 const root = document.querySelector('#root');
 const modal = NewElement('div', 'backdrop');
 const spinner = NewElement('div', 'loader');
+const spinnerContent = NewElement('span', 'loader_text', 'Authenticating');
+spinner.appendChild(spinnerContent);
 modal.appendChild(spinner);
 
 // Submit Login data and handle

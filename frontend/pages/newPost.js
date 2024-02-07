@@ -89,6 +89,7 @@ export const NewPost = () => {
   postTitle.setAttribute('required', 'true');
   const titleContent = NewElement('input', 'container_postContent_title_input');
   titleContent.setAttribute('placeholder', 'Your Title goes here!');
+  titleContent.setAttribute('maxlength', '25');
   const post = NewElement('span', 'container_postContent_post', 'Post');
   const postContent = NewElement(
     'textarea',
@@ -121,7 +122,7 @@ export const NewPost = () => {
     SendNewPost(currTitle, currPost, catList).then((data) => {
       if (data['post'] == 'accepted') {
         // forward to forum
-        CheckUserState(Forum());
+        CheckUserState(Forum(), true);
       } else if (data['post'] == 'rejected') {
         CheckUserState();
       }

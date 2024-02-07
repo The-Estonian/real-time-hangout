@@ -3,6 +3,8 @@ import { NewElement } from '../helpers/createElement.js';
 const root = document.querySelector('#root');
 const modal = NewElement('div', 'backdrop');
 const spinner = NewElement('div', 'loader');
+const spinnerContent = NewElement('span', 'loader_text', 'Fetching posts');
+spinner.appendChild(spinnerContent);
 modal.appendChild(spinner);
 
 export const GetPosts = async () => {
@@ -24,10 +26,12 @@ export const GetPosts = async () => {
     if (!response.ok) {
       root.removeChild(modal);
       throw new Error('No response after get posts');
+    } else {
+      root.removeChild(modal);
+      return response.json();
     }
-    root.removeChild(modal);
-    return response.json();
   } catch (err) {
+    console.log("Got error in GetPosts catch");
     root.removeChild(modal);
     return 'Authentication failed';
   }

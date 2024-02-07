@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"rtforum/validators"
 )
 
 func HandleGetPosts(w http.ResponseWriter, r *http.Request) {
@@ -15,15 +16,20 @@ func HandleGetPosts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
 
-	cookie, err := r.Cookie("rtForumCookie")
+	_, err := r.Cookie("rtForumCookie")
 	if err != nil {
-		callback["authorization"] = "fail"
+		callback["login"] = "fail"
+		jsonCallback, err := json.Marshal(callback)
+		if err != nil {
+			fmt.Println("Error marshaling callback in HandleGetPosts")
+		}
+		w.Write(jsonCallback)
 	} else {
-		fmt.Println("Getting all posts as User: ", cookie.Value)
+		jsonData, err := json.Marshal(validators.GetAllPostsBeforeDB())
+		if err != nil {
+			fmt.Println("Error marshaling callback in HandleGetPosts")
+		}
+		w.Write(jsonData)
 	}
-	writeData, err := json.Marshal(callback)
-	if err != nil {
-		fmt.Println("Error marshaling callback in HandleGetPosts")
-	}
-	w.Write(writeData)
+
 }

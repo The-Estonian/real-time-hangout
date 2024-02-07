@@ -5,13 +5,14 @@ import { CheckUserState } from '../backendConnection/checkState.js';
 import { Forum } from '../pages/forum.js';
 import { SendLoginData } from '../backendConnection/sendLoginData';
 import { SendRegisterData } from '../backendConnection/sendRegisterData';
+import { DeleteCookie } from '../helpers/delCookie.js';
 
 export const Auth = () => {
   const loginContainer = LoginMenu();
   const registerContainer = RegisterMenu();
   const loginOrRegister = NewElement(
     'button',
-    'container_menu_login_submit',
+    'container_menu_login_submit_switch',
     'Not registered? Click me!'
   );
 
@@ -50,11 +51,9 @@ export const Auth = () => {
           const cookieValue = data['rtforum-cookie-id'];
           const expiresAt = parseInt(data['rtforum-cookie-exp']);
           const expirationDate = new Date(expiresAt);
-
-          document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=None; Secure`;
-
+          document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax; Secure`;
           // give user access
-          CheckUserState(Forum());
+          CheckUserState(Forum(), false);
         } else if (data.login === 'usernameError') {
           loginUnsuccess.innerHTML = 'User does not exist!';
           loginContainer.appendChild(loginUnsuccess);

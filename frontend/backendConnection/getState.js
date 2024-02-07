@@ -3,6 +3,8 @@ import { NewElement } from '../helpers/createElement.js';
 const root = document.querySelector('#root');
 const modal = NewElement('div', 'backdrop');
 const spinner = NewElement('div', 'loader');
+const spinnerContent = NewElement('span', 'loader_text', 'Checking State');
+spinner.appendChild(spinnerContent);
 modal.appendChild(spinner);
 
 // Get user state and handle
@@ -20,7 +22,7 @@ export const GetState = async () => {
       },
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      credentials: 'include',
+      credentials: 'include'
     });
     if (!response.ok) {
       root.removeChild(modal);
@@ -29,6 +31,7 @@ export const GetState = async () => {
     root.removeChild(modal);
     return response.json();
   } catch (err) {
+    console.log("Error in GetState");
     root.removeChild(modal);
     return 'noCookie';
   }
