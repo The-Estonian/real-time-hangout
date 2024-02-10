@@ -77,6 +77,6 @@ func SetNewPostBeforeDB(user, title, post, categories string) {
 	}
 }
 
-func GetAllPostsBeforeDB() []structs.Post {
-	return database.GetAllPosts()
+func GetAllPostsBeforeDB(catFilter []string) []structs.Post {
+	return database.GetAllPosts(catFilter)
 }

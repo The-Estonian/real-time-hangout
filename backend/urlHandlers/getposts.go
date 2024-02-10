@@ -13,8 +13,17 @@ func HandleGetPosts(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	var callback = make(map[string]string)
+	
+	var postFilterCategories map[string]string
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&postFilterCategories); err != nil {
+		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	var categories []string 
+	json.Unmarshal([]byte(postFilterCategories["categories"]), &categories)
 
 	_, err := r.Cookie("rtForumCookie")
 	if err != nil {
@@ -25,7 +34,7 @@ func HandleGetPosts(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(jsonCallback)
 	} else {
-		jsonData, err := json.Marshal(validators.GetAllPostsBeforeDB())
+		jsonData, err := json.Marshal(validators.GetAllPostsBeforeDB(categories))
 		if err != nil {
 			fmt.Println("Error marshaling callback in HandleGetPosts")
 		}

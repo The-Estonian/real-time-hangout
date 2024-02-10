@@ -36,8 +36,8 @@ func SetNewPost(user, title, post string) string {
 	db := DbConnection()
 	var postId string
 	command := "INSERT INTO " +
-		"posts (user, title, post) " +
-		"VALUES (?, ?, ?) returning id"
+		"posts (user, title, post, created) " +
+		"VALUES (?, ?, ?, datetime('now', '+2 hours')) returning id"
 	err := db.QueryRow(command, user, title, post).Scan(&postId)
 	helpers.CheckErr("SetNewPost", err)
 	defer db.Close()

@@ -11,6 +11,44 @@ import red from '../categories/red.png';
 import white from '../categories/white.png';
 import yellow from '../categories/yellow.png';
 
+export const cats = [
+  {
+    id: 1,
+    imgSrc: blue,
+    imgAlt: 'blue circle',
+  },
+  {
+    id: 2,
+    imgSrc: green,
+    imgAlt: 'green circle',
+  },
+  {
+    id: 3,
+    imgSrc: orange,
+    imgAlt: 'orange circle',
+  },
+  {
+    id: 4,
+    imgSrc: purple,
+    imgAlt: 'purple circle',
+  },
+  {
+    id: 5,
+    imgSrc: red,
+    imgAlt: 'red circle',
+  },
+  {
+    id: 6,
+    imgSrc: white,
+    imgAlt: 'white circle',
+  },
+  {
+    id: 7,
+    imgSrc: yellow,
+    imgAlt: 'yellow circle',
+  },
+];
+
 export const NewPost = () => {
   let titleTrigger = false;
   const postContainer = NewElement('div', 'container_postContent');
@@ -21,45 +59,6 @@ export const NewPost = () => {
   );
 
   let catList = [];
-
-  const cats = [
-    {
-      id: 1,
-      imgSrc: blue,
-      imgAlt: 'blue circle',
-    },
-    {
-      id: 2,
-      imgSrc: green,
-      imgAlt: 'green circle',
-    },
-    {
-      id: 3,
-      imgSrc: orange,
-      imgAlt: 'orange circle',
-    },
-    {
-      id: 4,
-      imgSrc: purple,
-      imgAlt: 'purple circle',
-    },
-    {
-      id: 5,
-      imgSrc: red,
-      imgAlt: 'red circle',
-    },
-    {
-      id: 6,
-      imgSrc: white,
-      imgAlt: 'white circle',
-    },
-    {
-      id: 7,
-      imgSrc: yellow,
-      imgAlt: 'yellow circle',
-    },
-  ];
-
   const Allcategories = NewElement('div', 'container_postContent_categories');
 
   cats.forEach((each) => {

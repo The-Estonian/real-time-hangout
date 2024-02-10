@@ -73,7 +73,7 @@ func GetUserIdByUsername(username string) string {
 	return userId
 }
 
-func GetAllPosts() []structs.Post {
+func GetAllPosts(catFilter []string) []structs.Post {
 	db := DbConnection()
 	var AllPosts []structs.Post
 	command := "SELECT * FROM posts ORDER BY id DESC"
@@ -87,7 +87,19 @@ func GetAllPosts() []structs.Post {
 			&singlePost.Post,
 			&singlePost.Created)
 		singlePost.Categories = GetAllCategoriesForPost(singlePost.Id)
-		AllPosts = append(AllPosts, singlePost)
+		if len(catFilter) > 0 {
+			for i := 0; i < len(singlePost.Categories); i++ {
+				for j := 0; j < len(catFilter); j++ {
+					if singlePost.Categories[i].Category == catFilter[j] {
+						AllPosts = append(AllPosts, singlePost)
+						i = len(singlePost.Categories)
+						break
+					}
+				}
+			}
+		} else {
+			AllPosts = append(AllPosts, singlePost)
+		}
 	}
 	rows.Close()
 	defer db.Close()

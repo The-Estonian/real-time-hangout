@@ -7,7 +7,7 @@ const spinnerContent = NewElement('span', 'loader_text', 'Fetching posts');
 spinner.appendChild(spinnerContent);
 modal.appendChild(spinner);
 
-export const GetPosts = async () => {
+export const GetPosts = async (catList) => {
   root.appendChild(modal);
   try {
     const response = await fetch('http://localhost:8080/getposts', {
@@ -21,6 +21,9 @@ export const GetPosts = async () => {
       },
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify({
+        categories: JSON.stringify(catList),
+      }),
       credentials: 'include',
     });
     if (!response.ok) {
@@ -31,8 +34,8 @@ export const GetPosts = async () => {
       return response.json();
     }
   } catch (err) {
-    console.log("Got error in GetPosts catch");
-    root.removeChild(modal);
+    console.log('Got error in GetPosts catch');
+    // root.removeChild(modal);
     return 'Authentication failed';
   }
 };

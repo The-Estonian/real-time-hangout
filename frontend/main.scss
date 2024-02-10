@@ -193,7 +193,7 @@ html {
   &_forum {
     display: flex;
     flex-direction: column;
-    &_post {
+    &_all-posts {
       display: flex;
       margin: auto;
       margin-top: 1rem;
@@ -223,10 +223,96 @@ html {
           color: #7925d3;
           transform: rotate(30deg);
         }
+        &_created {
+          color: white;
+          width: 4rem;
+          margin-left: auto;
+          margin-top: auto;
+          padding-left: 2rem;
+          font-size: 1.1rem;
+          transform: rotate(-30deg);
+        }
       }
       &_content {
         margin: auto;
         overflow: hidden;
+        &_categories {
+          display: flex;
+          align-items: center;
+          margin: auto;
+          &_img {
+            height: 3rem;
+            width: 3rem;
+            margin: 0.1rem;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+    &_categories {
+      display: flex;
+      margin: auto;
+    }
+    &_single-post {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      margin-top: 15rem;
+      box-shadow: #7925d3 0px 0px 16px;
+      padding: 2rem;
+      border-radius: 5px;
+      &_title {
+        border-radius: 5px;
+        font-size: 1.3rem;
+        background: white;
+        color: rgb(121, 37, 211);
+        margin: 0.25rem;
+        padding: 0.25rem;
+        text-align: center;
+      }
+      &_content {
+        border-radius: 5px;
+        font-size: 1.3rem;
+        background: white;
+        color: rgb(121, 37, 211);
+        margin: 0.25rem;
+        padding: 0.25rem;
+        text-align: center;
+      }
+      &_date {
+        border-radius: 5px;
+        font-size: 1.3rem;
+        background: white;
+        color: rgb(121, 37, 211);
+        margin: 0.25rem;
+        padding: 0.25rem;
+        text-align: center;
+      }
+      &_user {
+        border-radius: 5px;
+        font-size: 1.3rem;
+        background: white;
+        color: rgb(121, 37, 211);
+        margin: 0.25rem;
+        padding: 0.25rem;
+        text-align: center;
+      }
+      &_back {
+        display: flex;
+        margin: auto;
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+          border-bottom: 1px solid #7925d3;
+          color: #ebe7ef;
+        }
       }
     }
   }
