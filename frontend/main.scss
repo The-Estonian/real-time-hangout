@@ -257,10 +257,11 @@ html {
       display: flex;
       flex-direction: column;
       margin: auto;
-      margin-top: 15rem;
       box-shadow: #7925d3 0px 0px 16px;
-      padding: 2rem;
+      padding: 1rem;
       border-radius: 5px;
+      width: 60%;
+
       &_title {
         border-radius: 5px;
         font-size: 1.3rem;
@@ -269,6 +270,7 @@ html {
         margin: 0.25rem;
         padding: 0.25rem;
         text-align: center;
+        box-shadow: #000000 0px 0px 16px;
       }
       &_content {
         border-radius: 5px;
@@ -278,6 +280,8 @@ html {
         margin: 0.25rem;
         padding: 0.25rem;
         text-align: center;
+        overflow: hidden;
+        box-shadow: #000000 0px 0px 16px;
       }
       &_date {
         border-radius: 5px;
@@ -287,6 +291,7 @@ html {
         margin: 0.25rem;
         padding: 0.25rem;
         text-align: center;
+        box-shadow: #000000 0px 0px 16px;
       }
       &_user {
         border-radius: 5px;
@@ -296,8 +301,73 @@ html {
         margin: 0.25rem;
         padding: 0.25rem;
         text-align: center;
+        box-shadow: #000000 0px 0px 16px;
       }
       &_back {
+        display: flex;
+        margin: auto;
+        margin-top: 5rem;
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+          border-bottom: 1px solid #7925d3;
+          color: #ebe7ef;
+        }
+      }
+    }
+    &_comments {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      text-align: center;
+      margin-top: 2rem;
+      width: 60%;
+      &_comment {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        font-size: 1.3rem;
+        background: #140524;
+        color: white;
+        text-align: center;
+        box-shadow: #7925d3 0px 0px 16px;
+        &_title{
+          background: white;
+          color: rgb(121, 37, 211);
+          padding: 0.5rem;
+          margin-right: auto;
+        }
+        &_content {
+          font-size: 1.2rem;
+          outline: none;
+          margin: auto;
+        }
+        &_user {
+          background: white;
+          color: rgb(121, 37, 211);
+          padding: 0.5rem;
+          margin-left: auto;
+        }
+      }
+      &_title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+      &_input {
+        font-size: 1.2rem;
+        outline: none;
+        width: 25%;
+        margin: auto;
+      }
+      &_submit {
         display: flex;
         margin: auto;
         color: white;
@@ -342,7 +412,7 @@ html {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 

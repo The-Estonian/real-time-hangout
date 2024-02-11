@@ -76,7 +76,7 @@ func GetUserIdByUsername(username string) string {
 func GetAllPosts(catFilter []string) []structs.Post {
 	db := DbConnection()
 	var AllPosts []structs.Post
-	command := "SELECT * FROM posts ORDER BY id DESC"
+	command := "SELECT posts.id, users.username, posts.title, posts.post, posts.created FROM posts INNER JOIN users ON posts.user = users.id ORDER BY posts.id DESC"
 	rows, err := db.Query(command)
 	helpers.CheckErr("GetAllPosts", err)
 	for rows.Next() {
@@ -112,6 +112,7 @@ func GetAllCategoriesForPost(postId string) []structs.Category {
 	command := "SELECT * FROM post_category_list WHERE post_id_from_posts=?"
 	rows, err := db.Query(command, postId)
 	helpers.CheckErr("GetAllCategoriesForPost", err)
+	defer db.Close()
 	for rows.Next() {
 		var singleCat structs.Category
 		rows.Scan(&singleCat.Id, &singleCat.Category, &singleCat.CategoryPost)
@@ -120,4 +121,20 @@ func GetAllCategoriesForPost(postId string) []structs.Category {
 	rows.Close()
 
 	return AllCategories
+}
+
+func GetComments(postId string) []structs.Comment {
+	db := DbConnection()
+	var AllComments []structs.Comment
+	command := "SELECT comment.id, comment.post_from_posts, users.username, comment.comment, comment.created FROM comment INNER JOIN users ON user_from_users = users.id WHERE comment.post_from_posts =?"
+	rows, err := db.Query(command, postId)
+	helpers.CheckErr("GetComments", err)
+	for rows.Next() {
+		var comment structs.Comment
+		rows.Scan(&comment.Id, &comment.ForPost, &comment.ByUser, &comment.Comment, comment.Created)
+		AllComments = append(AllComments, comment)
+	}
+	defer db.Close()
+
+	return AllComments
 }

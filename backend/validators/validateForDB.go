@@ -53,7 +53,7 @@ func GetHashBeforeDB(hash string) (bool, string) {
 	if exists {
 		layout := "2006-01-02 15:04:05"
 		hashDate, _ := time.Parse(layout, date)
-		currTime := time.Now().Add(time.Second * -30)
+		currTime := time.Now().Add(time.Minute * -10)
 		if currTime.Sub(hashDate) > 0 {
 			fmt.Println("Hash expired, Executing delete")
 			SetRemoveHashBeforeDB(hash)
@@ -79,4 +79,12 @@ func SetNewPostBeforeDB(user, title, post, categories string) {
 
 func GetAllPostsBeforeDB(catFilter []string) []structs.Post {
 	return database.GetAllPosts(catFilter)
+}
+
+func SetNewCommentBeforeDB(post, user, comment string) {
+	database.SetNewComment(post, user, comment)
+}
+
+func GetCommentsBeforeDB(postid string) []structs.Comment {
+	return database.GetComments(postid)
 }

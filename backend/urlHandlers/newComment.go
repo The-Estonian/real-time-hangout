@@ -7,16 +7,16 @@ import (
 	"rtforum/validators"
 )
 
-func HandleNewPost(w http.ResponseWriter, r *http.Request) {
+func HandleNewComment(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(r)
 	CorsEnabler(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	var newPostData map[string]string
+	var newCommentData map[string]string
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&newPostData); err != nil || len(newPostData["title"]) < 1 || len(newPostData["post"]) < 1 {
+	if err := decoder.Decode(&newCommentData); err != nil || len(newCommentData["comment"]) < 1 {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
@@ -29,10 +29,9 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		exists, user := validators.GetHashBeforeDB(cookie.Value)
 		if exists {
-			title := newPostData["title"]
-			post := newPostData["post"]
-			categories := newPostData["categories"]
-			validators.SetNewPostBeforeDB(user, title, post, categories)
+			comment := newCommentData["comment"]
+			post := newCommentData["post"]
+			validators.SetNewCommentBeforeDB(post, user, comment)
 			callback["post"] = "accepted"
 		} else {
 			callback["user"] = "false"
@@ -40,7 +39,7 @@ func HandleNewPost(w http.ResponseWriter, r *http.Request) {
 	}
 	writeData, err := json.Marshal(callback)
 	if err != nil {
-		fmt.Println("Error marshaling callback in HandleNewPost")
+		fmt.Println("Error marshaling callback in HandleNewComment")
 	}
 	w.Write(writeData)
 }

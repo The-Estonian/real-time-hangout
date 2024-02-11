@@ -11,7 +11,7 @@ import red from '../categories/red.png';
 import white from '../categories/white.png';
 import yellow from '../categories/yellow.png';
 
-export const cats = [
+export const categories = [
   {
     id: 1,
     imgSrc: blue,
@@ -61,7 +61,7 @@ export const NewPost = () => {
   let catList = [];
   const Allcategories = NewElement('div', 'container_postContent_categories');
 
-  cats.forEach((each) => {
+  categories.forEach((each) => {
     const category = NewElement(
       'img',
       'container_postContent_categories_catImg'

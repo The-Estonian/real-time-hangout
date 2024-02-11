@@ -5,7 +5,6 @@ import { CheckUserState } from '../backendConnection/checkState.js';
 import { Forum } from '../pages/forum.js';
 import { SendLoginData } from '../backendConnection/sendLoginData';
 import { SendRegisterData } from '../backendConnection/sendRegisterData';
-import { DeleteCookie } from '../helpers/delCookie.js';
 
 export const Auth = () => {
   const loginContainer = LoginMenu();

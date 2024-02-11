@@ -66,3 +66,16 @@ func SetCategoryToPost(postId string, category string) {
 	helpers.CheckErr("SetCategoryToPost", err)
 	defer db.Close()
 }
+
+func SetNewComment(post, user, comment string) {
+	db := DbConnection()
+	command := "INSERT INTO " +
+		"comment(" +
+		"post_from_posts, " +
+		"user_from_users, " +
+		"comment) " +
+		"VALUES(?, ?, ?)"
+	_, err := db.Exec(command, post, user, comment)
+	helpers.CheckErr("SetNewComment", err)
+	defer db.Close()
+}

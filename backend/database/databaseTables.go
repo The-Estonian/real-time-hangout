@@ -24,7 +24,7 @@ func CreateUserTable() {
 		"`email` VARCHAR(255) NOT NULL, " +
 		"`password` VARCHAR(255) NOT NULL)"
 	_, err := db.Exec(command)
-	helpers.CheckErr("CreateUsers", err)
+	helpers.CheckErr("CreateUserTable", err)
 	defer db.Close()
 }
 
@@ -36,7 +36,7 @@ func CreateSessionTable() {
 		"`hash` VARCHAR(255) NOT NULL, " +
 		"`date` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
 	_, err := db.Exec(command)
-	helpers.CheckErr("CreateSessions", err)
+	helpers.CheckErr("CreateSessionTable", err)
 	defer db.Close()
 }
 
@@ -48,7 +48,7 @@ func CreatePostTable() {
 		"`title` VARCHAR(255) NOT NULL, `post` VARCHAR(255), " +
 		"`created` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
 	_, err := db.Exec(command)
-	helpers.CheckErr("CreatePosts", err)
+	helpers.CheckErr("CreatePostTable", err)
 	defer db.Close()
 }
 
@@ -58,7 +58,7 @@ func CreateCategoryTable() {
 		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		"`category` VARCHAR(255) NOT NULL)"
 	_, err := db.Exec(command)
-	helpers.CheckErr("CreatePosts", err)
+	helpers.CheckErr("CreateCategoryTable", err)
 	defer db.Close()
 }
 
@@ -69,6 +69,19 @@ func CreatePostCategoryTable() {
 		"`post_category_from_category` INTEGER NOT NULL REFERENCES category(id), " +
 		"`post_id_from_posts` INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE)"
 	_, err := db.Exec(command)
-	helpers.CheckErr("CreatePosts", err)
+	helpers.CheckErr("CreatePostCategoryTable", err)
+	defer db.Close()
+}
+
+func CreateCommentTable() {
+	db := DbConnection()
+	command := "CREATE TABLE `comment` (" +
+		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		"`post_from_posts` INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE, " +
+		"`user_from_users` INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, " +
+		"`comment` VARCHAR(255) NOT NULL, " +
+		"`created` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+	_, err := db.Exec(command)
+	helpers.CheckErr("CreateCommentTable", err)
 	defer db.Close()
 }

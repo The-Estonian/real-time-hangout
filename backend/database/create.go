@@ -36,6 +36,9 @@ func Create() {
 		CreatePostCategoryTable()
 		fmt.Println("Post Category Table Created!")
 
+		CreateCommentTable()
+		fmt.Println("Post Comment Table Created!")
+
 		AppendDummyData()
 		fmt.Println("DummyData injected!")
 	}
