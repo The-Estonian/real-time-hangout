@@ -17,7 +17,7 @@ func main() {
 		Handler: mux,
 	}
 
-	mux.HandleFunc("/socket", urlHandlers.IndexSocket)
+	mux.HandleFunc("/socket", urlHandlers.Socket)
 	mux.HandleFunc("/login", urlHandlers.HandleLogin)
 	mux.HandleFunc("/register", urlHandlers.HandleRegister)
 	mux.HandleFunc("/checkstate", urlHandlers.HandleState)

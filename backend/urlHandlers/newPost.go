@@ -8,7 +8,6 @@ import (
 )
 
 func HandleNewPost(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println(r)
 	CorsEnabler(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)

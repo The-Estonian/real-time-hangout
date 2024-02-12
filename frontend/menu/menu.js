@@ -3,6 +3,7 @@ import { DeleteCookie } from '../helpers/delCookie.js';
 import { CheckUserState } from '../backendConnection/checkState.js';
 import { NewPost } from '../pages/newPost.js';
 import { Forum } from '../pages/forum.js';
+import { Messages } from '../pages/messages.js';
 
 export const Menu = () => {
   const menuContainer = NewElement('div', 'container_menu');
@@ -35,7 +36,6 @@ export const Menu = () => {
   menuContainer.appendChild(menuLogoutButton);
 
   menuForumButton.addEventListener('click', (e) => {
-    console.log("Forum button clicked");
     CheckUserState(Forum(), true);
   });
   
@@ -45,8 +45,11 @@ export const Menu = () => {
   });
   menuNewPostButton.addEventListener('click', () => {
     CheckUserState(NewPost(), true);
-    console.log("New post clicked");
   });
+
+  menuMessageButton.addEventListener("click", ()=> {
+    CheckUserState(Messages(), true);
+  })
 
   return menuContainer;
 };

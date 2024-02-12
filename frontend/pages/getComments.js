@@ -1,6 +1,6 @@
 import { NewElement } from '../helpers/createElement';
 import { GetComment } from '../backendConnection/getComment';
-import { NewComment } from './newComment';
+import { SendNewComment } from '../backendConnection/sendNewComment';
 
 export const GetComments = (postid) => {
   let allPostComments = document.querySelector('.container_forum_comments');
@@ -38,6 +38,7 @@ export const GetComments = (postid) => {
         allPostComments.appendChild(singleComment);
       });
     }
+
     // add comments
     const addCommentTitle = NewElement(
       'span',
@@ -56,7 +57,12 @@ export const GetComments = (postid) => {
 
     // send comment to server
     addCommentSubmit.addEventListener('click', () => {
-      NewComment(addCommentContent.value, postid);
+      if (addCommentContent.value != "") {
+        SendNewComment(addCommentContent.value, postid).then(() => {
+          allPostComments.innerHTML = '';
+          GetComments(postid);
+        });
+      }
       addCommentContent.value = '';
     });
 

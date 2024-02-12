@@ -377,6 +377,12 @@ html {
   border-bottom: 1px solid #7925d3;
   color: #ebe7ef;
 }
+.container_messages {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+}
 
 .input-fail {
   border: 1px solid red;
