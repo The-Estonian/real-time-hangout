@@ -138,3 +138,18 @@ func GetComments(postId string) []structs.Comment {
 
 	return AllComments
 }
+
+func GetUsers() []structs.User {
+	db := DbConnection()
+	var AllUsers []structs.User
+	command := "SELECT id, username, age, gender, firstName, lastName, email FROM users"
+	rows, err := db.Query(command)
+	helpers.CheckErr("GetUsers", err)
+	for rows.Next() {
+		var user structs.User
+		rows.Scan(&user.Id, &user.Username, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email)
+		AllUsers = append(AllUsers, user)
+	}
+	defer db.Close()
+	return AllUsers
+}

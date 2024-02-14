@@ -339,7 +339,7 @@ html {
         color: white;
         text-align: center;
         box-shadow: #7925d3 0px 0px 16px;
-        &_title{
+        &_title {
           background: white;
           color: rgb(121, 37, 211);
           padding: 0.5rem;
@@ -386,11 +386,87 @@ html {
       }
     }
   }
-  &_messages{
+  &_messages {
     display: flex;
     flex-direction: column;
     width: 80%;
     margin: auto;
+    margin-top: 2rem;
+    &_users-text {
+      display: flex;
+      flex-direction: row;
+      border-radius: 5px;
+      &_users {
+        display: flex;
+        flex-direction: column;
+        height: 85vh;
+        width: 30%;
+        overflow: hidden;
+        &_user {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 1.4rem;
+          border: 2px solid transparent;
+          height: 3rem;
+          width: 100%;
+          cursor: pointer;
+          &:hover {
+            background: black;
+            color: white;
+          }
+        }
+      }
+      &_text {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background: #140524;
+        color: white;
+        border-radius: 5px;
+      }
+      &_container {
+        font-size: 1.4rem;
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        width: 100%;
+        height: 85vh;
+        box-shadow: #7925d3 0px 0px 16px;
+        border-radius: 5px;
+        &_row {
+          width: 100%;
+          &_input {
+            width: 80%;
+            background: white;
+            height: 3rem;
+            outline: none;
+            border: none;
+            font-size: 1.5rem;
+            padding: 0 0.5rem;
+            text-align: left;
+            border-radius: 0 0 0 5px;
+          }
+          &_send {
+            width: 20%;
+            height: 3rem;
+            color: white;
+            text-decoration: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s ease-in-out;
+            box-shadow: #7925d3 0px 0px 16px;
+            border-radius:0 0 5px 0;
+          }
+        }
+      }
+    }
   }
 }
 
