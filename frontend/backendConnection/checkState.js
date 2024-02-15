@@ -3,7 +3,7 @@ import { GetState } from './getState.js';
 import { Menu } from '../menu/menu.js';
 import { Auth } from '../menu/auth.js';
 
-export const CheckUserState = (node = null, checkAuthentication = true) => {
+export const CheckUserState = (generateNode = null, checkAuthentication = true) => {
   const container = document.querySelector('.container');
   const menuContent = Menu();
     if (checkAuthentication) {
@@ -11,8 +11,8 @@ export const CheckUserState = (node = null, checkAuthentication = true) => {
         if (data['login'] == 'success') {
           container.innerHTML = '';
           container.appendChild(menuContent);
-          if (node != null) {
-            container.appendChild(node);
+          if (generateNode != null) {
+            container.appendChild(generateNode());
           }
         } else if (data['login'] == 'fail') {
           DeleteCookie('rtForumCookie');
@@ -26,8 +26,8 @@ export const CheckUserState = (node = null, checkAuthentication = true) => {
     } else {
       container.innerHTML = '';
       container.appendChild(menuContent);
-      if (node != null) {
-        container.appendChild(node);
+      if (generateNode != null) {
+        container.appendChild(generateNode());
       }
     }
 };

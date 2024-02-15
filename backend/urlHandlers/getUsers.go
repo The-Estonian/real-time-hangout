@@ -16,7 +16,7 @@ func HandleGetUsers(w http.ResponseWriter, r *http.Request) {
 	var callback = make(map[string]string)
 	w.WriteHeader(http.StatusOK)
 
-	_, err := r.Cookie("rtForumCookie")
+	cookie, err := r.Cookie("rtForumCookie")
 	if err != nil {
 		callback["login"] = "fail"
 		jsonCallback, err := json.Marshal(callback)
@@ -25,11 +25,20 @@ func HandleGetUsers(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(jsonCallback)
 	} else {
-		jsonData, err := json.Marshal(validators.GetAllUsersBeforeDB())
-		if err != nil {
-			fmt.Println("Error marshaling callback in HandleGetPosts")
+		exists, user := validators.GetHashBeforeDB(cookie.Value)
+		if exists {
+			jsonData, err := json.Marshal(validators.GetAllUsersBeforeDB(user))
+			if err != nil {
+				fmt.Println("Error marshaling callback in HandleGetPosts")
+			}
+			w.Write(jsonData)
+		} else {
+			callback["login"] = "fail"
+			jsonCallback, err := json.Marshal(callback)
+			if err != nil {
+				fmt.Println("Error marshaling callback in HandleGetPosts")
+			}
+			w.Write(jsonCallback)
 		}
-		w.Write(jsonData)
 	}
-
 }

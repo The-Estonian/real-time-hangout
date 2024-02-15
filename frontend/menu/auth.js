@@ -52,7 +52,7 @@ export const Auth = () => {
           const expirationDate = new Date(expiresAt);
           document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax; Secure`;
           // give user access
-          CheckUserState(Forum(), false);
+          CheckUserState(Forum, false);
         } else if (data.login === 'usernameError') {
           loginUnsuccess.innerHTML = 'User does not exist!';
           loginContainer.appendChild(loginUnsuccess);

@@ -3,23 +3,25 @@ package urlHandlers
 import (
 	"fmt"
 	"net/http"
+	"rtforum/validators"
 	"sync"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
 type Message struct {
-	Username string `json:"username"`
-	Message  string `json:"message"`
-	Room     string `json:"room"`
+	User    string `json:"fromuser"`
+	SendTo  string `json:"tousername"`
+	Message string `json:"message"`
+	Status  string `json:"status"`
 }
 
 type Client struct {
-	conn *websocket.Conn
-	send chan Message
-	room string
-	mu   sync.Mutex
+	conn   *websocket.Conn
+	send   chan Message
+	userId string
+	status string
+	mu     sync.Mutex
 }
 
 var upgrader = websocket.Upgrader{
@@ -38,16 +40,22 @@ var (
 
 func handleMessages() {
 	for {
+		// get broadcast and check where to send it
 		msg := <-broadcast
-
 		for client := range clients {
 			client.mu.Lock()
-			if client.room == msg.Room {
+			if msg.Status != "" {
+				if msg.User == client.userId {
+					client.status = msg.Status
+				}
+			}
+			if client.userId == msg.SendTo {
 				err := client.conn.WriteJSON(msg)
 				if err != nil {
 					fmt.Println(err)
 					client.conn.Close()
 					delete(clients, client)
+					delete(onlineUsers, client.userId)
 				}
 			}
 			client.mu.Unlock()
@@ -63,27 +71,25 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
+	cookie, err := r.Cookie("rtForumCookie")
+	_, user := validators.GetHashBeforeDB(cookie.Value)
+	if err != nil {
+		fmt.Println("Error getting cookie in Socket")
+	}
+
 	client := &Client{
-		conn: conn,
-		send: make(chan Message, 256),
-		room: uuid.New().String(),
+		conn:   conn,
+		userId: user,
+		send:   make(chan Message, 256),
 	}
 
 	clients[client] = true
-
-	initialMessage := Message{
-		Username: "Server", // Use a special username to indicate a system message
-		Message:  "You have joined the chat.",
-		Room:     client.room,
-	}
-	client.send <- initialMessage
 
 	go handleMessages()
 
 	for {
 		var msg Message
 		err := conn.ReadJSON(&msg)
-		fmt.Println(msg)
 		if err != nil {
 			fmt.Println("Error at reading")
 			fmt.Println(err)
@@ -93,10 +99,10 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Set the client's room based on the incoming message
-		client.mu.Lock()
-		client.room = msg.Room
-		client.mu.Unlock()
+		// // Set the client's room based on the incoming message
+		// client.mu.Lock()
+		// client.room = msg.Room
+		// client.mu.Unlock()
 
 		// Broadcast the message to the room
 		broadcast <- msg

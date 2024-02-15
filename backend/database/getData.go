@@ -139,7 +139,7 @@ func GetComments(postId string) []structs.Comment {
 	return AllComments
 }
 
-func GetUsers() []structs.User {
+func GetUsers(CurrUser string) []structs.User {
 	db := DbConnection()
 	var AllUsers []structs.User
 	command := "SELECT id, username, age, gender, firstName, lastName, email FROM users"
@@ -147,7 +147,11 @@ func GetUsers() []structs.User {
 	helpers.CheckErr("GetUsers", err)
 	for rows.Next() {
 		var user structs.User
+		user.CurrentUser = false
 		rows.Scan(&user.Id, &user.Username, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email)
+		if user.Id == CurrUser {
+			user.CurrentUser = true
+		}
 		AllUsers = append(AllUsers, user)
 	}
 	defer db.Close()

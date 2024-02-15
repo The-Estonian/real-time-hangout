@@ -88,6 +88,7 @@ func SetNewCommentBeforeDB(post, user, comment string) {
 func GetCommentsBeforeDB(postid string) []structs.Comment {
 	return database.GetComments(postid)
 }
-func GetAllUsersBeforeDB() []structs.User {
-	return database.GetUsers()
+func GetAllUsersBeforeDB(user string) []structs.User {
+	fmt.Println("User asking data: ", user)
+	return database.GetUsers(user)
 }

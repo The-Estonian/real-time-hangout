@@ -66,6 +66,11 @@ export const LoginMenu = () => {
       }
     }
   });
+  loginPassword.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+      loginSubmit.click();
+    }
+  });
 
   login.appendChild(loginUsernameTitle);
   login.appendChild(loginUsername);

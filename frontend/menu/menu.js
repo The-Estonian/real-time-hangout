@@ -36,7 +36,7 @@ export const Menu = () => {
   menuContainer.appendChild(menuLogoutButton);
 
   menuForumButton.addEventListener('click', (e) => {
-    CheckUserState(Forum(), true);
+    CheckUserState(Forum, true);
   });
   
   menuLogoutButton.addEventListener('click', (e) => {
@@ -44,11 +44,11 @@ export const Menu = () => {
     CheckUserState();
   });
   menuNewPostButton.addEventListener('click', () => {
-    CheckUserState(NewPost(), true);
+    CheckUserState(NewPost, true);
   });
 
   menuMessageButton.addEventListener("click", ()=> {
-    CheckUserState(Messages(), true);
+    CheckUserState(Messages, true);
   })
 
   return menuContainer;

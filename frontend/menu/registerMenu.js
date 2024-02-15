@@ -237,6 +237,11 @@ export const RegisterMenu = () => {
       }
     }
   });
+  registerPassword2.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+      registerSubmit.click();
+    }
+  });
 
   register.appendChild(registerUsernameTitle);
   register.appendChild(registerUsername);
