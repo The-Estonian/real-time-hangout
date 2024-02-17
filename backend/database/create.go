@@ -39,6 +39,9 @@ func Create() {
 		CreateCommentTable()
 		fmt.Println("Post Comment Table Created!")
 
+		CreateMessageTable()
+		fmt.Println("Post Comment Table Created!")
+
 		AppendDummyData()
 		fmt.Println("DummyData injected!")
 	}

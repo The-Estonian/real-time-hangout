@@ -85,3 +85,16 @@ func CreateCommentTable() {
 	helpers.CheckErr("CreateCommentTable", err)
 	defer db.Close()
 }
+
+func CreateMessageTable() {
+	db := DbConnection()
+	command := "CREATE TABLE `messages` (" +
+		"`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		"`userposter_from_users` INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE, " +
+		"`message` VATCHAR(255) NOT NULL, " +
+		"`userreceiver_from_users` INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE, " +
+		"`created` NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+	_, err := db.Exec(command)
+	helpers.CheckErr("CreateCommentTable", err)
+	defer db.Close()
+}

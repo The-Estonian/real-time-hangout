@@ -121,7 +121,7 @@ export const NewPost = () => {
     SendNewPost(currTitle, currPost, catList).then((data) => {
       if (data['post'] == 'accepted') {
         // forward to forum
-        CheckUserState(Forum(), true);
+        CheckUserState(Forum, true);
       } else if (data['post'] == 'rejected') {
         CheckUserState();
       }

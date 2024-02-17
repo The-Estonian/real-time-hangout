@@ -1,6 +1,6 @@
 import { NewElement } from '../helpers/createElement.js';
 
-export const GetMessages = async (count) => {
+export const GetMessages = async (count, channelPartner) => {
   const root = document.querySelector(
     '.container_messages_users-text_container'
   );
@@ -27,7 +27,8 @@ export const GetMessages = async (count) => {
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify({
-        count: count,
+        count: String(count),
+        channelPartner: channelPartner,
       }),
       credentials: 'include',
     });

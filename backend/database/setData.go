@@ -79,3 +79,16 @@ func SetNewComment(post, user, comment string) {
 	helpers.CheckErr("SetNewComment", err)
 	defer db.Close()
 }
+
+func SetNewMessage(fromuser, message, touser string) {
+	db := DbConnection()
+	command := "INSERT INTO " +
+		"messages(" +
+		"userposter_from_users, " +
+		"message, " +
+		"userreceiver_from_users) " +
+		"VALUES(?, ?, ?)"
+	_, err := db.Exec(command, fromuser, message, touser)
+	helpers.CheckErr("SetNewComment", err)
+	defer db.Close()
+}

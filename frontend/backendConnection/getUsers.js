@@ -32,7 +32,9 @@ export const GetUsers = async () => {
     }
   } catch (err) {
     console.log('Got error in GetUsers catch');
-    // root.removeChild(modal);
+    if (root.contains(modal)) {
+      root.removeChild(modal);
+    }
     return 'Authentication failed';
   }
 };

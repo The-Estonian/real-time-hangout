@@ -9,19 +9,18 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type Message struct {
-	User    string `json:"fromuser"`
-	SendTo  string `json:"tousername"`
-	Message string `json:"message"`
-	Status  string `json:"status"`
+type Client struct {
+	conn        *websocket.Conn
+	send        chan []byte
+	connOwnerId string
+	mu          sync.Mutex
 }
 
-type Client struct {
-	conn   *websocket.Conn
-	send   chan Message
-	userId string
-	status string
-	mu     sync.Mutex
+type Message struct {
+	Type    string `json:"type"`
+	From    string `json:"fromuser"`
+	Message string `json:"message"`
+	To      string `json:"touser"`
 }
 
 var upgrader = websocket.Upgrader{
@@ -33,60 +32,78 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var (
-	clients   = make(map[*Client]bool)
-	broadcast = make(chan Message)
-)
+var clients = make(map[*Client]bool)
+var broadcast = make(chan Message)
 
 func handleMessages() {
 	for {
 		// get broadcast and check where to send it
 		msg := <-broadcast
-		for client := range clients {
-			client.mu.Lock()
-			if msg.Status != "" {
-				if msg.User == client.userId {
-					client.status = msg.Status
+
+		switch msg.Type {
+		case "message":
+			// save to db
+			validators.SetNewMessageBeforeDB(msg.From, msg.Message, msg.To)
+			// send to selected user
+			fmt.Println("Got message from: ", msg.From, "Sending to: ", msg.To)
+			for client := range clients {
+				if msg.To == client.connOwnerId {
+					client.mu.Lock()
+					err := client.conn.WriteJSON(msg)
+					if err != nil {
+						fmt.Println(err)
+						client.conn.Close()
+						delete(clients, client)
+					}
+
+					client.mu.Unlock()
 				}
 			}
-			if client.userId == msg.SendTo {
-				err := client.conn.WriteJSON(msg)
-				if err != nil {
-					fmt.Println(err)
-					client.conn.Close()
-					delete(clients, client)
-					delete(onlineUsers, client.userId)
-				}
+		case "onlineStatus":
+			// broadcast everyone that you are online/offline
+			// send to everyone that is online
+			for client := range clients {
+				client.conn.WriteJSON(msg)
 			}
-			client.mu.Unlock()
 		}
 	}
 }
 
 func Socket(w http.ResponseWriter, r *http.Request) {
+	// upgrade connection to socket and close if not needed
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer conn.Close()
-
+	var connectionUserId string
 	cookie, err := r.Cookie("rtForumCookie")
-	_, user := validators.GetHashBeforeDB(cookie.Value)
 	if err != nil {
-		fmt.Println("Error getting cookie in Socket")
+		fmt.Println("Cookie missing handle it! ->Socket")
+	} else {
+		exists, userId := validators.GetHashBeforeDB(cookie.Value)
+		if !exists {
+			fmt.Println("User does not exist handle it! ->Socket")
+		} else {
+			connectionUserId = userId
+		}
 	}
 
 	client := &Client{
-		conn:   conn,
-		userId: user,
-		send:   make(chan Message, 256),
+		conn:        conn,
+		connOwnerId: connectionUserId,
+		send:        make(chan []byte, 256),
 	}
+	// end
 
+	// add new client to map
 	clients[client] = true
 
+	// sort clients to send messages to
 	go handleMessages()
 
+	// receive messages from client and send to broadcaster
 	for {
 		var msg Message
 		err := conn.ReadJSON(&msg)
@@ -98,13 +115,6 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			client.mu.Unlock()
 			return
 		}
-
-		// // Set the client's room based on the incoming message
-		// client.mu.Lock()
-		// client.room = msg.Room
-		// client.mu.Unlock()
-
-		// Broadcast the message to the room
 		broadcast <- msg
 	}
 }

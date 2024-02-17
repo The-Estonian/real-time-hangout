@@ -144,6 +144,7 @@ func GetUsers(CurrUser string) []structs.User {
 	var AllUsers []structs.User
 	command := "SELECT id, username, age, gender, firstName, lastName, email FROM users"
 	rows, err := db.Query(command)
+	defer db.Close()
 	helpers.CheckErr("GetUsers", err)
 	for rows.Next() {
 		var user structs.User
@@ -154,6 +155,22 @@ func GetUsers(CurrUser string) []structs.User {
 		}
 		AllUsers = append(AllUsers, user)
 	}
-	defer db.Close()
+	defer rows.Close()
 	return AllUsers
+}
+
+func GetMessage(fromuser, count, touser string) []structs.Message {
+	db := DbConnection()
+	var UserMessages []structs.Message
+	command := "SELECT * FROM messages WHERE (userposter_from_users = ? OR userposter_from_users = ?) AND (userreceiver_from_users = ? OR userreceiver_from_users = ?) ORDER BY id DESC LIMIT ?"
+	rows, err := db.Query(command, fromuser, touser, fromuser, touser, count)
+	defer db.Close()
+	helpers.CheckErr("GetMessage", err)
+	for rows.Next() {
+		var message structs.Message
+		rows.Scan(&message.Id, &message.FromUser, &message.Message, &message.ToUser, &message.Date)
+		UserMessages = append(UserMessages, message)
+	}
+	defer rows.Close()
+	return UserMessages
 }

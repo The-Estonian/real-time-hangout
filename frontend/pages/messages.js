@@ -28,6 +28,7 @@ export const Messages = () => {
     'container_messages_users-text_container_row_send',
     'Send'
   );
+  messagesTextInputSend.setAttribute("disabled", "true")
   messagesTextInputRow.appendChild(messagesTextInput);
   messagesTextInputRow.appendChild(messagesTextInputSend);
   messagesTextContainer.appendChild(messagesText);
@@ -37,6 +38,7 @@ export const Messages = () => {
   let channelPartner;
   // Fetch and append all users
   GetUsers().then((users) => {
+    console.log(users);
     if (users != null && users.login != 'fail') {
       users.forEach((eachUser) => {
         if (!eachUser.CurrentUser) {
@@ -50,18 +52,25 @@ export const Messages = () => {
             // last 10 items from db, set index to 10?
             messagesText.innerHTML = '';
             let count = 10;
-            GetMessages(count).then((message) => {
-              console.log(message);
+            GetMessages(count, eachUser.Id).then((message) => {
+              if (message != null) {
+                for (let i = message.length-1; 0 <= i; i--) {
+                  const text = NewElement(
+                    'span',
+                    'container_messages_users-text_users_text_content',
+                    `${
+                      users.filter((x) => x.Id == message[i].FromUser)[0]
+                        .Username
+                    }: ${message[i].Message}`
+                  );
+                  if (currentUser.Id == message[i].FromUser) {
+                    text.style.color = 'gray';
+                  }
+                  messagesText.appendChild(text);
+                }
+              }
             });
 
-            // ['1', '2', '3', '4'].forEach((item) => {
-            //   const text = NewElement(
-            //     'span',
-            //     'container_messages_users-text_users_text_content',
-            //     item
-            //   );
-            //   messagesText.appendChild(text);
-            // });
             // set channel partner
             channelPartner = eachUser;
           });
@@ -74,48 +83,32 @@ export const Messages = () => {
 
     let socket = new WebSocket('ws://localhost:8080/socket');
     socket.onopen = (e) => {
-      const greeting = NewElement(
-        'span',
-        'container_messages_message',
-        'Connection established!'
-      );
-      messagesText.appendChild(greeting);
-      // const notifySocket = {
-      //   user: currentUser.Id,
-      //   status: 'online',
-      // };
-      console.log(currentUser);
-      socket.send(JSON.stringify({ user: currentUser.Id, status: 'online' }));
-      // console.log(e);
+      messagesTextInputSend.removeAttribute('disabled');
+      // socket.send(JSON.stringify({ user: currentUser.Id, status: 'online' }));
     };
 
     socket.onclose = (e) => {
-      messagesText.innerHTML = '';
-      const closing = NewElement(
-        'span',
-        'container_messages_message',
-        'Connection has been closed!'
-      );
-      messagesText.appendChild(closing);
+      messagesTextInputSend.setAttribute('disabled', 'true');
 
-      const notifySocket = {
-        user: currentUser.Id,
-        status: 'offline',
-      };
-      socket.send(JSON.stringify(notifySocket));
+      // const notifySocket = {
+      //   user: currentUser.Id,
+      //   status: 'offline',
+      // };
+      // socket.send(JSON.stringify(notifySocket));
     };
 
     socket.onerror = (err) => {
-      messagesText.innerHTML = '';
-      const error = NewElement(
-        'span',
-        'container_messages_message',
-        'Server closed the connection, socket error!'
-      );
-      messagesText.appendChild(error);
+      // messagesText.innerHTML = '';
+      // const error = NewElement(
+      //   'span',
+      //   'container_messages_message',
+      //   'Server closed the connection, socket error!'
+      // );
+      // messagesText.appendChild(error);
 
-      const errorMsg = NewElement('span', 'container_messages_message', err);
-      messagesText.appendChild(errorMsg);
+      // const errorMsg = NewElement('span', 'container_messages_message', err);
+      // messagesText.appendChild(errorMsg);
+      messagesTextInputSend.setAttribute('disabled', 'true');
     };
 
     messagesTextInputSend.addEventListener('click', (e) => {
@@ -127,9 +120,10 @@ export const Messages = () => {
       );
       socket.send(
         JSON.stringify({
+          type: 'message',
           fromuser: currentUser.Id,
           message: messagesTextInput.value,
-          tousername: channelPartner.Id,
+          touser: channelPartner.Id,
         })
       );
       messagesTextInput.value = '';
