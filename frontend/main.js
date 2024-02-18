@@ -1,4 +1,4 @@
-// import { SocketConnection } from './sock/socket.js';
+import {Forum} from "./pages/forum.js"
 import './main.css';
 
 import { Auth } from './menu/auth.js';
@@ -8,4 +8,4 @@ const root = document.querySelector('#root');
 
 root.appendChild(Auth());
 // check user state
-CheckUserState();
+CheckUserState(Forum);
