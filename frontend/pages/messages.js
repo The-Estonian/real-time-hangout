@@ -2,7 +2,110 @@ import { NewElement } from '../helpers/createElement';
 import { GetUsers } from '../backendConnection/getUsers';
 import { GetMessages } from '../backendConnection/getMessages';
 import { CheckUserState } from '../backendConnection/checkState';
+import { LoadMoreMessages } from '../backendConnection/loadMoreMessages';
+import {
+  FormattedTimeDifference,
+  GetTimeDifference,
+} from '../helpers/timeDateManipulation';
 
+const addToExistingMessages = (message, users, lastposter, currentUser) => {
+  const messagesText = document.querySelector(
+    '.container_messages_users-text_container_content'
+  );
+  let oldheight = messagesText.scrollHeight;
+  if (message != null) {
+    for (let i = 0; i < message.length; i++) {
+      const text = NewElement(
+        'div',
+        'container_messages_users-text_container_content_text'
+      );
+      const textRowPoster = NewElement(
+        'span',
+        'container_messages_users-text_container_content_text_user',
+        `${users.filter((x) => x.Id == message[i].FromUser)[0].Username}`
+      );
+      const textRowContent = NewElement(
+        'span',
+        'container_messages_users-text_container_content_text_text',
+        `${message[i].Message}`
+      );
+      const newDate = document.createElement('span');
+      const messageDate = new Date(message[i].Date);
+      newDate.textContent = `${messageDate.getDate()}-${
+        messageDate.getMonth() + 1
+      }-${messageDate.getFullYear()}`;
+      newDate.classList.add('message-date');
+      textRowContent.appendChild(newDate);
+      text.appendChild(textRowPoster);
+      text.appendChild(textRowContent);
+      if (
+        messagesText.firstChild.childNodes[0].textContent ==
+        users.filter((x) => x.Id == message[i].FromUser)[0].Username
+      ) {
+        messagesText.firstChild.removeChild(
+          messagesText.firstChild.childNodes[0]
+        );
+      }
+      if (currentUser.Id == message[i].FromUser) {
+        textRowPoster.classList.add('post-ownership');
+        textRowContent.classList.add('text-ownership');
+      }
+      messagesText.insertBefore(text, messagesText.firstChild);
+    }
+    messagesText.scrollTo(0, messagesText.scrollHeight - oldheight);
+  }
+};
+
+const buildMessages = (message, users, lastposter, currentUser) => {
+  const messagesText = document.querySelector(
+    '.container_messages_users-text_container_content'
+  );
+  if (messagesText != null) {
+    messagesText.innerHTML = '';
+    if (message != null) {
+      for (let i = message.length - 1; 0 <= i; i--) {
+        const text = NewElement(
+          'div',
+          'container_messages_users-text_container_content_text'
+        );
+        const textRowPoster = NewElement(
+          'span',
+          'container_messages_users-text_container_content_text_user',
+          `${users.filter((x) => x.Id == message[i].FromUser)[0].Username}`
+        );
+        const textRowContent = NewElement(
+          'span',
+          'container_messages_users-text_container_content_text_text',
+          `${message[i].Message}`
+        );
+        const newDate = document.createElement('span');
+        const messageDate = new Date(message[i].Date);
+        newDate.textContent = `${messageDate.getDate()}-${
+          messageDate.getMonth() + 1
+        }-${messageDate.getFullYear()}`;
+        newDate.classList.add('message-date');
+        textRowContent.appendChild(newDate);
+        // {FormattedTimeDifference(GetTimeDifference(message[i].Date))
+        if (
+          lastposter !=
+          users.filter((x) => x.Id == message[i].FromUser)[0].Username
+        ) {
+          text.appendChild(textRowPoster);
+        }
+        lastposter = users.filter((x) => x.Id == message[i].FromUser)[0]
+          .Username;
+        text.appendChild(textRowContent);
+        if (currentUser.Id == message[i].FromUser) {
+          textRowPoster.classList.add('post-ownership');
+          textRowContent.classList.add('text-ownership');
+        }
+        messagesText.appendChild(text);
+      }
+      messagesText.scrollTo(0, messagesText.scrollHeight);
+    }
+  }
+  return lastposter;
+};
 
 export const Messages = () => {
   let count = 10;
@@ -34,6 +137,12 @@ export const Messages = () => {
     'container_messages_users-text_container_row_send',
     'Send'
   );
+  const messagesTextWelcome = NewElement(
+    'span',
+    'container_messages_users-text_container_welcome',
+    'Select a user from left to start communicating!'
+  );
+  messagesTextContainer.appendChild(messagesTextWelcome);
   messagesTextInputSend.setAttribute('disabled', 'true');
   messagesTextInputRow.appendChild(messagesTextInput);
   messagesTextInputRow.appendChild(messagesTextInputSend);
@@ -48,8 +157,10 @@ export const Messages = () => {
 
   let currentUser;
   let channelPartner;
+  let loadMoreCounter;
 
   // Fetch and append all user in database
+  let lastposter;
   GetUsers().then((users) => {
     if (users != null && users.login != 'fail') {
       users.forEach((eachUser) => {
@@ -62,56 +173,12 @@ export const Messages = () => {
           user.addEventListener('click', (e) => {
             // check if user is still logged in
             CheckUserState();
-
-            // remove last user data and fetch new user message data on click
-            messagesText.innerHTML = '';
-            
-            let lastposter;
+            if (messagesTextContainer.contains(messagesTextWelcome)) {
+              messagesTextContainer.removeChild(messagesTextWelcome);
+            }
+            loadMoreCounter = 20;
             GetMessages(count, eachUser.Id).then((message) => {
-              if (message != null) {
-                for (let i = message.length - 1; 0 <= i; i--) {
-                  const text = NewElement(
-                    'div',
-                    'container_messages_users-text_container_content_text'
-                  );
-                  const textRowPoster = NewElement(
-                    'span',
-                    'container_messages_users-text_container_content_text_user',
-                    `${
-                      users.filter((x) => x.Id == message[i].FromUser)[0]
-                        .Username
-                    }`
-                  );
-                  const textRowContent = NewElement(
-                    'span',
-                    'container_messages_users-text_container_content_text_text',
-                    `${message[i].Message}`
-                  );
-                  if (
-                    lastposter !=
-                    users.filter((x) => x.Id == message[i].FromUser)[0].Username
-                  ) {
-                    text.appendChild(textRowPoster);
-                  }
-                  lastposter = users.filter(
-                    (x) => x.Id == message[i].FromUser
-                  )[0].Username;
-                  text.appendChild(textRowContent);
-                  if (currentUser.Id == message[i].FromUser) {
-                    textRowPoster.classList.add('post-ownership');
-                    textRowContent.classList.add('text-ownership');
-                  }
-                  messagesText.appendChild(text);
-                }
-              }
-              messagesText.scrollTo(0, messagesText.scrollHeight);
-              messagesText.addEventListener('scroll', (e) => {
-                if (e.target.scrollTop == 0) {
-                  console.log('LOAD MORE STUFF!');
-                  e.target.scrollTop = 1;
-                }
-              });
-              return messagesText;
+              buildMessages(message, users, lastposter, currentUser);
             });
 
             // set channel partner
@@ -148,60 +215,73 @@ export const Messages = () => {
     // check send button logic
     messagesTextInputSend.addEventListener('click', (e) => {
       if (messagesTextInput.value.length != 0) {
-        // text row container
-        const text = NewElement(
-          'div',
-          'container_messages_users-text_container_content_text'
-        );
-        // text author
-        const textRowPoster = NewElement(
-          'span',
-          'container_messages_users-text_container_content_text_user',
-          `${users.filter((x) => x.Id == currentUser.Id)[0].Username}`
-        );
-        // text content
-        const textRowContent = NewElement(
-          'span',
-          'container_messages_users-text_container_content_text_text',
-          `${messagesTextInput.value}`
-        );
-        textRowPoster.classList.add('post-ownership');
-        textRowContent.classList.add('text-ownership');
+        if (channelPartner != null) {
+          // text row container
+          const text = NewElement(
+            'div',
+            'container_messages_users-text_container_content_text'
+          );
+          // text author
+          const textRowPoster = NewElement(
+            'span',
+            'container_messages_users-text_container_content_text_user',
+            `${users.filter((x) => x.Id == currentUser.Id)[0].Username}`
+          );
+          // text content
+          const textRowContent = NewElement(
+            'span',
+            'container_messages_users-text_container_content_text_text',
+            `${messagesTextInput.value}`
+          );
+          textRowPoster.classList.add('post-ownership');
+          textRowContent.classList.add('text-ownership');
 
-        // check whos the last poster and logic if to add username or not
-        const rootTextbox = document.querySelector(
-          '.container_messages_users-text_container_content'
-        );
-        let lastposter;
-        if (rootTextbox.childNodes.length != 0) {
-          let lastPosterNode =
-            rootTextbox.childNodes[rootTextbox.childNodes.length - 1];
-          while (lastPosterNode.childNodes.length != 2) {
-            lastPosterNode = lastPosterNode.previousSibling;
+          // check whos the last poster and logic if to add username or not
+          const rootTextbox = document.querySelector(
+            '.container_messages_users-text_container_content'
+          );
+          let lastposter;
+          if (rootTextbox.childNodes.length != 0) {
+            let lastPosterNode =
+              rootTextbox.childNodes[rootTextbox.childNodes.length - 1];
+            if (lastPosterNode != null) {
+              while (lastPosterNode.childNodes.length != 2) {
+                lastPosterNode = lastPosterNode.previousSibling;
+              }
+            }
+            lastposter = lastPosterNode.childNodes[0].textContent;
           }
-          lastposter = lastPosterNode.childNodes[0].textContent;
-        }
-        if (
-          lastposter != users.filter((x) => x.Id == currentUser.Id)[0].Username
-        ) {
-          text.appendChild(textRowPoster);
-        }
-        // end
+          if (
+            lastposter !=
+            users.filter((x) => x.Id == currentUser.Id)[0].Username
+          ) {
+            text.appendChild(textRowPoster);
+          }
+          // end
+          const newDate = document.createElement('span');
+          const messageDate = new Date();
+          newDate.textContent = `${messageDate.getDate()}-${
+            messageDate.getMonth() + 1
+          }-${messageDate.getFullYear()}`;
+          newDate.classList.add('message-date');
+          textRowContent.appendChild(newDate);
 
-        text.appendChild(textRowContent);
-        messagesText.appendChild(text);
-        messagesText.scrollTo(0, messagesText.scrollHeight);
+          text.appendChild(textRowContent);
+          messagesText.appendChild(text);
+          messagesText.scrollTo(0, messagesText.scrollHeight);
 
-        // send text to server via socket
-        socket.send(
-          JSON.stringify({
-            type: 'message',
-            fromuser: currentUser.Id,
-            message: messagesTextInput.value,
-            touser: channelPartner.Id,
-          })
-        );
-        messagesTextInput.value = '';
+          // send text to server via socket
+
+          socket.send(
+            JSON.stringify({
+              type: 'message',
+              fromuser: currentUser.Id,
+              message: messagesTextInput.value,
+              touser: channelPartner.Id,
+            })
+          );
+          messagesTextInput.value = '';
+        }
       }
     });
 
@@ -232,8 +312,7 @@ export const Messages = () => {
           lastPosterNode = lastPosterNode.previousSibling;
         }
         let lastposter = lastPosterNode.childNodes[0].textContent;
-        console.log(lastposter);
-        console.log(users.filter((x) => x.Id == message.fromuser)[0].Username);
+        // console.log(users.filter((x) => x.Id == message.fromuser)[0].Username);
         if (
           lastposter !=
           users.filter((x) => x.Id == message.fromuser)[0].Username
@@ -246,6 +325,20 @@ export const Messages = () => {
         messagesText.scrollTo(0, messagesText.scrollHeight);
       }
     };
+
+    loadMoreCounter = 20;
+    messagesText.addEventListener('wheel', (e) => {
+      if (messagesText.scrollTop == 0) {
+        messagesText.scrollTop = 1;
+        console.log('Loading');
+        LoadMoreMessages(loadMoreCounter, channelPartner.Id).then(
+          (moreMessages) => {
+            addToExistingMessages(moreMessages, users, lastposter, currentUser);
+          }
+        );
+        loadMoreCounter += 10;
+      }
+    });
   });
 
   messagesUsersText.appendChild(messagesUsers);

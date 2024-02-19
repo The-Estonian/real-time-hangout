@@ -193,6 +193,7 @@ html {
   &_forum {
     display: flex;
     flex-direction: column;
+    padding-bottom: 1rem;
     &_all-posts {
       display: flex;
       margin: auto;
@@ -226,7 +227,7 @@ html {
         &_created {
           color: white;
           width: 4rem;
-          margin-left: auto;
+          // margin-left: auto;
           margin-top: auto;
           padding-left: 2rem;
           font-size: 1.1rem;
@@ -239,7 +240,7 @@ html {
         &_categories {
           display: flex;
           align-items: center;
-          margin: auto;
+          margin-left: auto;
           &_img {
             height: 3rem;
             width: 3rem;
@@ -429,15 +430,20 @@ html {
         height: 85vh;
         background: #140524;
         border-radius: 5px;
+        box-shadow: #7925d3 0px 0px 16px;
+        &_welcome{
+            margin: auto;
+          }
         &_content {
           width: 100%;
-          overflow: auto;
+          overflow-y: scroll;
           -ms-overflow-style: none;
           scrollbar-width: none;
           margin-top: auto;
           // &::-webkit-scrollbar{
 
           // }
+
           &_text {
             display: flex;
             flex-direction: column;
@@ -445,7 +451,9 @@ html {
             width: 100%;
             color: white;
             border-radius: 5px;
-
+            &:last-child {
+              margin-bottom: 1rem;
+            }
             // box-shadow: #7925d3 0px 16px 16px -16px;
             &_user {
               padding: 0 1rem;
@@ -458,20 +466,20 @@ html {
               margin-bottom: 0.25rem;
             }
             &_text {
+              display: flex;
+              flex-direction: row-reverse;
               margin-left: 0.25rem;
               font-size: 1.2rem;
-              border: 1px solid white;
-              margin:0.1rem 0.5rem;
               border-radius: 5px;
-              padding: 0.5rem;
-              width: 75%;
+              width: fit-content;
+              max-width: 75%;
               text-align: left;
             }
           }
+          
         }
         &_row {
           width: 100%;
-          margin-top: 1rem;
           &_input {
             width: 80%;
             background: white;
@@ -511,8 +519,9 @@ html {
   border-radius: 5px 0 0 5px;
 }
 .text-ownership {
+  display: flex;
+  flex-direction: row;
   margin-left: auto;
-  margin-right: 0.25rem;
   text-align: right;
 }
 
@@ -532,6 +541,15 @@ html {
 
 .denied {
   color: red;
+}
+
+.message-date{
+  display: block;
+  position: relative;
+  top: 6px;
+  transform: rotate(-30deg);
+  font-size: 10px;
+  padding: 0 1rem;
 }
 
 .backdrop {

@@ -2,8 +2,10 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"rtforum/helpers"
 	"rtforum/structs"
+	"strconv"
 )
 
 func GetPassword(username string) (string, error) {
@@ -164,6 +166,28 @@ func GetMessage(fromuser, count, touser string) []structs.Message {
 	var UserMessages []structs.Message
 	command := "SELECT * FROM messages WHERE (userposter_from_users = ? OR userposter_from_users = ?) AND (userreceiver_from_users = ? OR userreceiver_from_users = ?) ORDER BY id DESC LIMIT ?"
 	rows, err := db.Query(command, fromuser, touser, fromuser, touser, count)
+	defer db.Close()
+	helpers.CheckErr("GetMessage", err)
+	for rows.Next() {
+		var message structs.Message
+		rows.Scan(&message.Id, &message.FromUser, &message.Message, &message.ToUser, &message.Date)
+		UserMessages = append(UserMessages, message)
+	}
+	defer rows.Close()
+	return UserMessages
+}
+
+func GetMoreMessages(fromuser, count, touser string) []structs.Message {
+	db := DbConnection()
+	offset, err := strconv.Atoi(count)
+	if err != nil {
+		fmt.Println(err)
+	}
+	offset = offset - 10
+	counter := 10
+	var UserMessages []structs.Message
+	command := "SELECT * FROM messages WHERE (userposter_from_users = ? OR userposter_from_users = ?) AND (userreceiver_from_users = ? OR userreceiver_from_users = ?) ORDER BY id DESC LIMIT ? OFFSET ?"
+	rows, err := db.Query(command, fromuser, touser, fromuser, touser, counter, offset)
 	defer db.Close()
 	helpers.CheckErr("GetMessage", err)
 	for rows.Next() {

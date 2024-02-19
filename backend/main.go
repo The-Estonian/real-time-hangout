@@ -27,6 +27,7 @@ func main() {
 	mux.HandleFunc("/getcomment", urlHandlers.HandleGetComment)
 	mux.HandleFunc("/getusers", urlHandlers.HandleGetUsers)
 	mux.HandleFunc("/getmessages", urlHandlers.HandleGetMessages)
+	mux.HandleFunc("/loadmoremessages", urlHandlers.HandleLoadMoreMessages)
 
 	fmt.Println("To Kill Server press Ctrl+C")
 	err := server.ListenAndServe()

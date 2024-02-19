@@ -101,3 +101,7 @@ func SetNewMessageBeforeDB(fromuser, message, touser string) {
 func GetMessageBeforeDB(fromuser, count, touser string) []structs.Message {
 	return database.GetMessage(fromuser, count, touser)
 }
+
+func GetMoreMessagesBeforeDB(fromuser, count, touser string) []structs.Message {
+	return database.GetMoreMessages(fromuser, count, touser)
+}
