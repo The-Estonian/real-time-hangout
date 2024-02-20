@@ -431,9 +431,9 @@ html {
         background: #140524;
         border-radius: 5px;
         box-shadow: #7925d3 0px 0px 16px;
-        &_welcome{
-            margin: auto;
-          }
+        &_welcome {
+          margin: auto;
+        }
         &_content {
           width: 100%;
           overflow-y: scroll;
@@ -476,7 +476,6 @@ html {
               text-align: left;
             }
           }
-          
         }
         &_row {
           width: 100%;
@@ -508,7 +507,37 @@ html {
         }
       }
     }
+    &_notification {
+      position: absolute;
+      background: #140524;
+      padding: 1rem;
+      font-size: 1.5rem;
+      right: 0;
+      border-radius: 5px;
+      top: 3rem;
+      // transition: 3s;
+      animation: new-notification 3s infinite;
+    }
   }
+}
+
+@keyframes new-notification {
+  0% {
+    top: -3rem;
+    opacity: 0;
+  }
+  50% {
+    top: 3rem;
+    opacity: 1;
+  }
+  100% {
+    top: 9rem;
+    opacity: 0;
+  }
+}
+
+.new-message {
+  background: #7925d3;
 }
 
 .post-ownership {
@@ -543,7 +572,7 @@ html {
   color: red;
 }
 
-.message-date{
+.message-date {
   display: block;
   position: relative;
   top: 6px;

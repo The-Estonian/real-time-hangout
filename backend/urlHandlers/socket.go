@@ -19,6 +19,7 @@ type Client struct {
 type Message struct {
 	Type    string `json:"type"`
 	From    string `json:"fromuser"`
+	FromId  string `json:"fromuserid"`
 	Message string `json:"message"`
 	To      string `json:"touser"`
 }
@@ -43,9 +44,8 @@ func handleMessages() {
 		switch msg.Type {
 		case "message":
 			// save to db
-			validators.SetNewMessageBeforeDB(msg.From, msg.Message, msg.To)
+			validators.SetNewMessageBeforeDB(msg.FromId, msg.Message, msg.To)
 			// send to selected user
-			fmt.Println("Got message from: ", msg.From, "Sending to: ", msg.To)
 			for client := range clients {
 				if msg.To == client.connOwnerId {
 					client.mu.Lock()

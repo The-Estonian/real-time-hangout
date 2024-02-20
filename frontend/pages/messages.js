@@ -3,10 +3,9 @@ import { GetUsers } from '../backendConnection/getUsers';
 import { GetMessages } from '../backendConnection/getMessages';
 import { CheckUserState } from '../backendConnection/checkState';
 import { LoadMoreMessages } from '../backendConnection/loadMoreMessages';
-import {
-  FormattedTimeDifference,
-  GetTimeDifference,
-} from '../helpers/timeDateManipulation';
+import { throttle } from '../helpers/throttle';
+import { socket } from '../main';
+import { forEach } from 'lodash';
 
 const addToExistingMessages = (message, users, lastposter, currentUser) => {
   const messagesText = document.querySelector(
@@ -143,7 +142,6 @@ export const Messages = () => {
     'Select a user from left to start communicating!'
   );
   messagesTextContainer.appendChild(messagesTextWelcome);
-  messagesTextInputSend.setAttribute('disabled', 'true');
   messagesTextInputRow.appendChild(messagesTextInput);
   messagesTextInputRow.appendChild(messagesTextInputSend);
   messagesTextContainer.appendChild(messagesText);
@@ -173,6 +171,9 @@ export const Messages = () => {
           user.addEventListener('click', (e) => {
             // check if user is still logged in
             CheckUserState();
+            if (user.classList.contains('new-message')) {
+              user.classList.remove('new-message');
+            }
             if (messagesTextContainer.contains(messagesTextWelcome)) {
               messagesTextContainer.removeChild(messagesTextWelcome);
             }
@@ -192,13 +193,8 @@ export const Messages = () => {
     }
 
     // open websocket
-    let socket = new WebSocket('ws://localhost:8080/socket');
 
     // remove send button disabled state when socket is open to receive data
-    socket.onopen = (e) => {
-      messagesTextInputSend.removeAttribute('disabled');
-      // socket.send(JSON.stringify({ user: currentUser.Id, status: 'online' }));
-    };
 
     // disable send button on socket close and print
     socket.onclose = (e) => {
@@ -275,7 +271,8 @@ export const Messages = () => {
           socket.send(
             JSON.stringify({
               type: 'message',
-              fromuser: currentUser.Id,
+              fromuser: currentUser.Username,
+              fromuserid: currentUser.Id,
               message: messagesTextInput.value,
               touser: channelPartner.Id,
             })
@@ -286,51 +283,68 @@ export const Messages = () => {
     });
 
     socket.onmessage = (e) => {
+      console.log('Handle message in messages!');
       let message = JSON.parse(e.data);
-      if (channelPartner.Id == message.fromuser) {
-        const text = NewElement(
-          'div',
-          'container_messages_users-text_container_content_text'
-        );
-        const textRowPoster = NewElement(
-          'span',
-          'container_messages_users-text_container_content_text_user',
-          `${users.filter((x) => x.Id == message.fromuser)[0].Username}`
-        );
-        const textRowContent = NewElement(
-          'span',
-          'container_messages_users-text_container_content_text_text',
-          `${message.message}`
-        );
+      if (channelPartner != null) {
+        if (channelPartner.Id == message.fromuserid) {
+          const text = NewElement(
+            'div',
+            'container_messages_users-text_container_content_text'
+          );
+          const textRowPoster = NewElement(
+            'span',
+            'container_messages_users-text_container_content_text_user',
+            `${users.filter((x) => x.Id == message.fromuserid)[0].Username}`
+          );
+          const textRowContent = NewElement(
+            'span',
+            'container_messages_users-text_container_content_text_text',
+            `${message.message}`
+          );
 
-        const rootTextbox = document.querySelector(
-          '.container_messages_users-text_container_content'
-        );
-        let lastPosterNode =
-          rootTextbox.childNodes[rootTextbox.childNodes.length - 1];
-        while (lastPosterNode.childNodes.length != 2) {
-          lastPosterNode = lastPosterNode.previousSibling;
-        }
-        let lastposter = lastPosterNode.childNodes[0].textContent;
-        // console.log(users.filter((x) => x.Id == message.fromuser)[0].Username);
-        if (
-          lastposter !=
-          users.filter((x) => x.Id == message.fromuser)[0].Username
-        ) {
-          text.appendChild(textRowPoster);
-        }
+          const rootTextbox = document.querySelector(
+            '.container_messages_users-text_container_content'
+          );
+          let lastPosterNode =
+            rootTextbox.childNodes[rootTextbox.childNodes.length - 1];
+          while (lastPosterNode.childNodes.length != 2) {
+            lastPosterNode = lastPosterNode.previousSibling;
+          }
+          let lastposter = lastPosterNode.childNodes[0].textContent;
+          // console.log(users.filter((x) => x.Id == message.fromuser)[0].Username);
+          if (
+            lastposter !=
+            users.filter((x) => x.Id == message.fromuserid)[0].Username
+          ) {
+            text.appendChild(textRowPoster);
+          }
 
-        text.appendChild(textRowContent);
-        messagesText.appendChild(text);
-        messagesText.scrollTo(0, messagesText.scrollHeight);
+          const newDate = document.createElement('span');
+          const messageDate = new Date();
+          newDate.textContent = `${messageDate.getDate()}-${
+            messageDate.getMonth() + 1
+          }-${messageDate.getFullYear()}`;
+          newDate.classList.add('message-date');
+          textRowContent.appendChild(newDate);
+
+          text.appendChild(textRowContent);
+          messagesText.appendChild(text);
+          messagesText.scrollTo(0, messagesText.scrollHeight);
+        }
+      } else {
+        const allUsers = document.querySelectorAll(
+          '.container_messages_users-text_users_user'
+        );
+        allUsers.forEach((user) => {
+          if (user.childNodes[0].data == message.fromuser) {
+            user.classList.add('new-message');
+          }
+        });
       }
     };
-
-    loadMoreCounter = 20;
-    messagesText.addEventListener('wheel', (e) => {
-      if (messagesText.scrollTop == 0) {
-        messagesText.scrollTop = 1;
-        console.log('Loading');
+    const throttledWheelHandler = throttle((e) => {
+      if (messagesText.scrollTop < 10) {
+        // console.log('Loading more messages!');
         LoadMoreMessages(loadMoreCounter, channelPartner.Id).then(
           (moreMessages) => {
             addToExistingMessages(moreMessages, users, lastposter, currentUser);
@@ -338,7 +352,10 @@ export const Messages = () => {
         );
         loadMoreCounter += 10;
       }
-    });
+    }, 500);
+
+    loadMoreCounter = 20;
+    messagesText.addEventListener('wheel', throttledWheelHandler);
   });
 
   messagesUsersText.appendChild(messagesUsers);

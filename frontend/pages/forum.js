@@ -1,6 +1,7 @@
 import { NewElement } from '../helpers/createElement';
 import { categories } from './newPost';
 import { FetchPosts } from './fetchPosts';
+import { socket } from '../main';
 
 export const Forum = () => {
   const forumContainer = NewElement('div', 'container_forum');
@@ -38,5 +39,27 @@ export const Forum = () => {
   forumContainer.appendChild(Allcategories);
   // all posts iterated
   FetchPosts(catList);
+
+  socket.onmessage = (e) => {
+    let name = JSON.parse(e.data);
+    console.log(name);
+    const rootAccess = document.querySelector('.container');
+    const newMessageModal = NewElement(
+      'span',
+      'container_messages_notification',
+      `New message from ${name.fromuser}`
+      // ${
+      //   users.filter((x) => x.Id == message.fromuser)[0].Username
+      // }`
+    );
+
+    rootAccess.appendChild(newMessageModal);
+    setTimeout(() => {
+      if (rootAccess.contains(newMessageModal)) {
+        rootAccess.removeChild(newMessageModal);
+      }
+    }, '3000');
+  };
+
   return forumContainer;
 };

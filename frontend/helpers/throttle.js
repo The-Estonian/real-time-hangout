@@ -1,12 +1,10 @@
-export const Throttle = (func, interval) => {
-  let isRunning = false;
+export const throttle = (callback, delay) => {
+  let lastCall = 0;
   return (...args) => {
-    if (!isRunning) {
-      isRunning = true;
-      func.apply(this, args);
-      setTimeout(() => {
-        isRunning = false;
-      }, interval);
+    const now = new Date().getTime();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      callback(...args);
     }
   };
 };

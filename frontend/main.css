@@ -495,6 +495,34 @@ html {
   box-shadow: #7925d3 0px 0px 10px;
   border-radius: 0 0 5px 0;
 }
+.container_messages_notification {
+  position: absolute;
+  background: #140524;
+  padding: 1rem;
+  font-size: 1.5rem;
+  right: 0;
+  border-radius: 5px;
+  top: 3rem;
+  animation: new-notification 3s infinite;
+}
+
+@keyframes new-notification {
+  0% {
+    top: -3rem;
+    opacity: 0;
+  }
+  50% {
+    top: 3rem;
+    opacity: 1;
+  }
+  100% {
+    top: 9rem;
+    opacity: 0;
+  }
+}
+.new-message {
+  background: #7925d3;
+}
 
 .post-ownership {
   margin-left: auto;
