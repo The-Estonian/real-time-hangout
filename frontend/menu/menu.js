@@ -4,6 +4,7 @@ import { CheckUserState } from '../backendConnection/checkState.js';
 import { NewPost } from '../pages/newPost.js';
 import { Forum } from '../pages/forum.js';
 import { Messages } from '../pages/messages.js';
+import { socket } from '../backendConnection/checkState.js';
 
 export const Menu = () => {
   const menuContainer = NewElement('div', 'container_menu');
@@ -38,18 +39,19 @@ export const Menu = () => {
   menuForumButton.addEventListener('click', (e) => {
     CheckUserState(Forum, true);
   });
-  
+
   menuLogoutButton.addEventListener('click', (e) => {
     DeleteCookie('rtForumCookie');
+    socket.close();
     CheckUserState();
   });
   menuNewPostButton.addEventListener('click', () => {
     CheckUserState(NewPost, true);
   });
 
-  menuMessageButton.addEventListener("click", ()=> {
+  menuMessageButton.addEventListener('click', () => {
     CheckUserState(Messages, true);
-  })
+  });
 
   return menuContainer;
 };

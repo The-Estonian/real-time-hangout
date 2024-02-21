@@ -4,8 +4,7 @@ import { GetMessages } from '../backendConnection/getMessages';
 import { CheckUserState } from '../backendConnection/checkState';
 import { LoadMoreMessages } from '../backendConnection/loadMoreMessages';
 import { throttle } from '../helpers/throttle';
-import { socket } from '../main';
-import { forEach } from 'lodash';
+import { socket } from '../backendConnection/checkState';
 
 const addToExistingMessages = (message, users, lastposter, currentUser) => {
   const messagesText = document.querySelector(
@@ -168,6 +167,7 @@ export const Messages = () => {
             'container_messages_users-text_users_user',
             eachUser.Username
           );
+          user.setAttribute('id', eachUser.Id);
           user.addEventListener('click', (e) => {
             // check if user is still logged in
             CheckUserState();
@@ -198,7 +198,7 @@ export const Messages = () => {
 
     // disable send button on socket close and print
     socket.onclose = (e) => {
-      console.log('Socket closed', err);
+      console.log('Socket closed from messages', e);
       messagesTextInputSend.setAttribute('disabled', 'true');
     };
 
@@ -282,9 +282,40 @@ export const Messages = () => {
       }
     });
 
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(
+        JSON.stringify({
+          type: 'onlineStatus',
+        })
+      );
+    } else {
+      socket.onopen = (e) => {
+        socket.send(
+          JSON.stringify({
+            type: 'onlineStatus',
+          })
+        );
+      };
+    }
+
     socket.onmessage = (e) => {
-      console.log('Handle message in messages!');
       let message = JSON.parse(e.data);
+      console.log(message);
+      if (message.type == 'onlineStatus') {
+        const allUsers = document.querySelectorAll(
+          '.container_messages_users-text_users_user'
+        );
+        for (let i = 0; i < message.connectedclients.length; i++) {
+          console.log('Online user: ', message.connectedclients[i]);
+          allUsers.forEach((user) => {
+            if (user.id == message.connectedclients[i]) {
+              user.classList.add('user-logged-in');
+            }
+          });
+
+          users.filter((x) => x.Id == message.connectedclients[i]).style;
+        }
+      }
       if (channelPartner != null) {
         if (channelPartner.Id == message.fromuserid) {
           const text = NewElement(
@@ -305,31 +336,42 @@ export const Messages = () => {
           const rootTextbox = document.querySelector(
             '.container_messages_users-text_container_content'
           );
-          let lastPosterNode =
-            rootTextbox.childNodes[rootTextbox.childNodes.length - 1];
-          while (lastPosterNode.childNodes.length != 2) {
-            lastPosterNode = lastPosterNode.previousSibling;
-          }
-          let lastposter = lastPosterNode.childNodes[0].textContent;
-          // console.log(users.filter((x) => x.Id == message.fromuser)[0].Username);
-          if (
-            lastposter !=
-            users.filter((x) => x.Id == message.fromuserid)[0].Username
-          ) {
-            text.appendChild(textRowPoster);
-          }
+          if (rootTextbox != null) {
+            let lastPosterNode =
+              rootTextbox.childNodes[rootTextbox.childNodes.length - 1];
+            while (lastPosterNode.childNodes.length != 2) {
+              lastPosterNode = lastPosterNode.previousSibling;
+            }
+            let lastposter = lastPosterNode.childNodes[0].textContent;
+            // console.log(users.filter((x) => x.Id == message.fromuser)[0].Username);
+            if (
+              lastposter !=
+              users.filter((x) => x.Id == message.fromuserid)[0].Username
+            ) {
+              text.appendChild(textRowPoster);
+            }
 
-          const newDate = document.createElement('span');
-          const messageDate = new Date();
-          newDate.textContent = `${messageDate.getDate()}-${
-            messageDate.getMonth() + 1
-          }-${messageDate.getFullYear()}`;
-          newDate.classList.add('message-date');
-          textRowContent.appendChild(newDate);
+            const newDate = document.createElement('span');
+            const messageDate = new Date();
+            newDate.textContent = `${messageDate.getDate()}-${
+              messageDate.getMonth() + 1
+            }-${messageDate.getFullYear()}`;
+            newDate.classList.add('message-date');
+            textRowContent.appendChild(newDate);
 
-          text.appendChild(textRowContent);
-          messagesText.appendChild(text);
-          messagesText.scrollTo(0, messagesText.scrollHeight);
+            text.appendChild(textRowContent);
+            messagesText.appendChild(text);
+            messagesText.scrollTo(0, messagesText.scrollHeight);
+          }
+        } else {
+          const allUsers = document.querySelectorAll(
+            '.container_messages_users-text_users_user'
+          );
+          allUsers.forEach((user) => {
+            if (user.childNodes[0].data == message.fromuser) {
+              user.classList.add('new-message');
+            }
+          });
         }
       } else {
         const allUsers = document.querySelectorAll(

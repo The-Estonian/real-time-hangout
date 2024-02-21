@@ -20,9 +20,10 @@ func HandleState(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		callback["login"] = "fail"
 	} else {
-		exists, _ := validators.GetHashBeforeDB(cookie.Value)
+		exists, userId := validators.GetHashBeforeDB(cookie.Value)
 		if exists {
 			callback["login"] = "success"
+			callback["userId"] = userId
 		} else {
 			callback["login"] = "fail"
 		}

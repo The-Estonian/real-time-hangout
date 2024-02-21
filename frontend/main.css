@@ -520,6 +520,17 @@ html {
     opacity: 0;
   }
 }
+.user-logged-in::after {
+  position: relative;
+  left: 15%;
+  top: 0;
+  background: #00FF00;
+  content: "";
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+}
+
 .new-message {
   background: #7925d3;
 }

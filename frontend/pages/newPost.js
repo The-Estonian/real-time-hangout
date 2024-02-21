@@ -2,6 +2,7 @@ import { NewElement } from '../helpers/createElement.js';
 import { SendNewPost } from '../backendConnection/sendNewPost.js';
 import { CheckUserState } from '../backendConnection/checkState.js';
 import { Forum } from './forum.js';
+import { socket } from '../backendConnection/checkState.js';
 
 import blue from '../categories/blue.png';
 import green from '../categories/green.png';
@@ -127,6 +128,25 @@ export const NewPost = () => {
       }
     });
   });
+
+  socket.onmessage = (e) => {
+    let name = JSON.parse(e.data);
+    console.log(name);
+    if (name.type != 'onlineStatus') {
+      const rootAccess = document.querySelector('.container');
+      const newMessageModal = NewElement(
+        'span',
+        'container_messages_notification',
+        `New message from ${name.fromuser}`
+      );
+      rootAccess.appendChild(newMessageModal);
+      setTimeout(() => {
+        if (rootAccess.contains(newMessageModal)) {
+          rootAccess.removeChild(newMessageModal);
+        }
+      }, '3000');
+    }
+  };
 
   postContainer.appendChild(containerTitle);
   postContainer.appendChild(Allcategories);

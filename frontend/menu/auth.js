@@ -6,6 +6,8 @@ import { Forum } from '../pages/forum.js';
 import { SendLoginData } from '../backendConnection/sendLoginData';
 import { SendRegisterData } from '../backendConnection/sendRegisterData';
 
+
+
 export const Auth = () => {
   const loginContainer = LoginMenu();
   const registerContainer = RegisterMenu();
@@ -52,7 +54,7 @@ export const Auth = () => {
           const expirationDate = new Date(expiresAt);
           document.cookie = `${cookieName}=${cookieValue}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax; Secure`;
           // give user access
-          CheckUserState(Forum, false);
+          CheckUserState(Forum);
         } else if (data.login === 'usernameError') {
           loginUnsuccess.innerHTML = 'User does not exist!';
           loginContainer.appendChild(loginUnsuccess);

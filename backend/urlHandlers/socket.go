@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"rtforum/validators"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -14,14 +15,16 @@ type Client struct {
 	send        chan []byte
 	connOwnerId string
 	mu          sync.Mutex
+	lastActive  time.Time
 }
 
 type Message struct {
-	Type    string `json:"type"`
-	From    string `json:"fromuser"`
-	FromId  string `json:"fromuserid"`
-	Message string `json:"message"`
-	To      string `json:"touser"`
+	Type             string   `json:"type"`
+	From             string   `json:"fromuser"`
+	FromId           string   `json:"fromuserid"`
+	Message          string   `json:"message"`
+	To               string   `json:"touser"`
+	ConnectedClients []string `json:"connectedclients"`
 }
 
 var upgrader = websocket.Upgrader{
@@ -36,11 +39,28 @@ var upgrader = websocket.Upgrader{
 var clients = make(map[*Client]bool)
 var broadcast = make(chan Message)
 
+func periodicUserPresenceCheck() {
+	for {
+		time.Sleep(time.Minute) // Adjust the interval as needed
+
+		// Iterate through clients and update their online status based on lastActive
+		currentTimestamp := time.Now()
+		for client := range clients {
+			client.mu.Lock()
+			if currentTimestamp.Sub(client.lastActive) > 3*time.Minute {
+				client.conn.Close()
+				delete(clients, client)
+			}
+			client.mu.Unlock()
+		}
+	}
+}
+
 func handleMessages() {
+
 	for {
 		// get broadcast and check where to send it
 		msg := <-broadcast
-
 		switch msg.Type {
 		case "message":
 			// save to db
@@ -60,16 +80,36 @@ func handleMessages() {
 				}
 			}
 		case "onlineStatus":
+			users := []string{}
+			for key, _ := range clients {
+				users = append(users, key.connOwnerId)
+			}
+			allUsers := Message{
+				Type:             "onlineStatus",
+				ConnectedClients: users,
+			}
 			// broadcast everyone that you are online/offline
 			// send to everyone that is online
+			// _, userId := validators.GetHashBeforeDB(msg.UserHash)
 			for client := range clients {
-				client.conn.WriteJSON(msg)
+				client.mu.Lock()
+				client.conn.WriteJSON(allUsers)
+				client.mu.Unlock()
+			}
+		case "logout":
+			fmt.Println("Got logout command!")
+			for client := range clients {
+				if msg.FromId == client.connOwnerId {
+					client.conn.Close()
+					delete(clients, client)
+				}
 			}
 		}
 	}
 }
 
 func Socket(w http.ResponseWriter, r *http.Request) {
+
 	// upgrade connection to socket and close if not needed
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -90,18 +130,27 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// sort clients to send messages to
+	go handleMessages()
+	go periodicUserPresenceCheck()
+
+	
+
 	client := &Client{
 		conn:        conn,
 		connOwnerId: connectionUserId,
 		send:        make(chan []byte, 256),
 	}
+
+	clients[client] = true
 	// end
 
-	// add new client to map
-	clients[client] = true
 
-	// sort clients to send messages to
-	go handleMessages()
+	// clone channel after clients disconnects
+	defer func() {
+		// close the send channel when the client disconnects
+		close(client.send)
+	}()
 
 	// receive messages from client and send to broadcaster
 	for {
@@ -115,6 +164,9 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 			client.mu.Unlock()
 			return
 		}
+		client.mu.Lock()
+		client.lastActive = time.Now()
+		client.mu.Unlock()
 		broadcast <- msg
 	}
 }
