@@ -569,12 +569,14 @@ html {
 }
 
 .message-date {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
-  top: 6px;
+  top: 0px;
   transform: rotate(-30deg);
   font-size: 10px;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 }
 
 .backdrop {

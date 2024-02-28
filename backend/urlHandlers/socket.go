@@ -11,7 +11,7 @@ import (
 )
 
 type Client struct {
-	conn        *websocket.Conn
+	connection  *websocket.Conn
 	send        chan []byte
 	connOwnerId string
 	mu          sync.Mutex
@@ -20,6 +20,7 @@ type Client struct {
 
 type Message struct {
 	Type             string   `json:"type"`
+	Status           string   `json:"status"`
 	From             string   `json:"fromuser"`
 	FromId           string   `json:"fromuserid"`
 	Message          string   `json:"message"`
@@ -47,8 +48,8 @@ func periodicUserPresenceCheck() {
 		currentTimestamp := time.Now()
 		for client := range clients {
 			client.mu.Lock()
-			if currentTimestamp.Sub(client.lastActive) > 3*time.Minute {
-				client.conn.Close()
+			if currentTimestamp.Sub(client.lastActive) > time.Minute {
+				client.connection.Close()
 				delete(clients, client)
 			}
 			client.mu.Unlock()
@@ -69,39 +70,52 @@ func handleMessages() {
 			for client := range clients {
 				if msg.To == client.connOwnerId {
 					client.mu.Lock()
-					err := client.conn.WriteJSON(msg)
+					err := client.connection.WriteJSON(msg)
 					if err != nil {
 						fmt.Println(err)
-						client.conn.Close()
+						client.connection.Close()
 						delete(clients, client)
 					}
-
 					client.mu.Unlock()
 				}
 			}
 		case "onlineStatus":
 			users := []string{}
-			for key, _ := range clients {
+			for key := range clients {
 				users = append(users, key.connOwnerId)
 			}
 			allUsers := Message{
 				Type:             "onlineStatus",
+				Status:           "online",
 				ConnectedClients: users,
 			}
 			// broadcast everyone that you are online/offline
-			// send to everyone that is online
-			// _, userId := validators.GetHashBeforeDB(msg.UserHash)
 			for client := range clients {
 				client.mu.Lock()
-				client.conn.WriteJSON(allUsers)
+				client.connection.WriteJSON(allUsers)
 				client.mu.Unlock()
 			}
 		case "logout":
-			fmt.Println("Got logout command!")
+
 			for client := range clients {
 				if msg.FromId == client.connOwnerId {
-					client.conn.Close()
+					client.connection.Close()
 					delete(clients, client)
+
+					users := []string{}
+					for key := range clients {
+						users = append(users, key.connOwnerId)
+					}
+					allUsers := Message{
+						Type:             "onlineStatus",
+						Status:           "offline",
+						ConnectedClients: users,
+					}
+					for innerclient := range clients {
+						innerclient.mu.Lock()
+						innerclient.connection.WriteJSON(allUsers)
+						innerclient.mu.Unlock()
+					}
 				}
 			}
 		}
@@ -116,7 +130,6 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	defer conn.Close()
 	var connectionUserId string
 	cookie, err := r.Cookie("rtForumCookie")
 	if err != nil {
@@ -134,10 +147,8 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 	go handleMessages()
 	go periodicUserPresenceCheck()
 
-	
-
 	client := &Client{
-		conn:        conn,
+		connection:  conn,
 		connOwnerId: connectionUserId,
 		send:        make(chan []byte, 256),
 	}
@@ -145,11 +156,11 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 	clients[client] = true
 	// end
 
-
-	// clone channel after clients disconnects
+	// // clone channel after clients disconnects
 	defer func() {
-		// close the send channel when the client disconnects
-		close(client.send)
+		// close(client.closeSignal)
+		client.connection.Close()
+		// close(client.send)
 	}()
 
 	// receive messages from client and send to broadcaster
@@ -157,8 +168,8 @@ func Socket(w http.ResponseWriter, r *http.Request) {
 		var msg Message
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			fmt.Println("Error at reading")
-			fmt.Println(err)
+			// fmt.Println("Error at reading, closing connection of: ", client.connOwnerId)
+			// fmt.Println(err)
 			client.mu.Lock()
 			delete(clients, client)
 			client.mu.Unlock()

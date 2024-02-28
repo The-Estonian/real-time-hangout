@@ -9,4 +9,5 @@ type User struct {
 	LastName  string
 	Email     string
 	CurrentUser bool
+	LastMessage string
 }

@@ -76,10 +76,11 @@ export const NewPost = () => {
       } else {
         category.classList.add('selectCat');
       }
-      if (catList.includes(e.explicitOriginalTarget.id)) {
-        catList = catList.filter((item) => item != e.explicitOriginalTarget.id);
+      console.log(catList);
+      if (catList.includes(e.target.id)) {
+        catList = catList.filter((item) => item != e.target.id);
       } else {
-        catList.push(e.explicitOriginalTarget.id);
+        catList.push(e.target.id);
       }
     });
     Allcategories.appendChild(category);

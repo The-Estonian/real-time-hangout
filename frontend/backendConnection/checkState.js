@@ -19,19 +19,44 @@ export const CheckUserState = (
     GetState().then((data) => {
       if (data['login'] == 'success') {
         if (socket == undefined || socket.readyState === WebSocket.CLOSED) {
+          console.log("Starting new socket");
           startSocket();
         }
-        socket.onopen = (e) => {
-          console.log('Socket is open');
-          window.addEventListener('beforeunload', function () {
+        if (socket.readyState === WebSocket.OPEN) {
+          console.log("Sending online status");
+          socket.send(
+            JSON.stringify({
+              type: 'onlineStatus',
+              status: 'online',
+            })
+          );
+        } else {
+          socket.onopen = (e) => {
+            console.log('Sending online status');
             socket.send(
-              JSON.stringify({ type: 'logout', fromuserid: data['userId'] })
+              JSON.stringify({
+                type: 'onlineStatus',
+                status: 'online',
+              })
             );
-          });
-        };
+            window.addEventListener('beforeunload', function () {
+              socket.send(
+                JSON.stringify({
+                  type: 'logout',
+                  status: 'offline',
+                  fromuserid: data['userId'],
+                })
+              );
+            });
+          };
+        }
         socket.close = (e) => {
           socket.send(
-            JSON.stringify({ type: 'logout', fromuserid: data['userId'] })
+            JSON.stringify({
+              type: 'logout',
+              status: 'offline',
+              fromuserid: data['userId'],
+            })
           );
           socket = undefined;
         };

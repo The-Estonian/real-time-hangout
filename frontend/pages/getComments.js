@@ -66,6 +66,12 @@ export const GetComments = (postid) => {
       addCommentContent.value = '';
     });
 
+    allPostComments.addEventListener('keypress', (e) => {
+      if (e.key == 'Enter') {
+        addCommentSubmit.click();
+      }
+    });
+
     allPostComments.appendChild(addCommentTitle);
     allPostComments.appendChild(addCommentContent);
     allPostComments.appendChild(addCommentSubmit);

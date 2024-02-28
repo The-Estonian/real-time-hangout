@@ -159,6 +159,7 @@ export const Messages = () => {
   // Fetch and append all user in database
   let lastposter;
   GetUsers().then((users) => {
+    // console.log(users);
     if (users != null && users.login != 'fail') {
       users.forEach((eachUser) => {
         if (!eachUser.CurrentUser) {
@@ -266,8 +267,20 @@ export const Messages = () => {
           messagesText.appendChild(text);
           messagesText.scrollTo(0, messagesText.scrollHeight);
 
+          // raise child to parent first
+          console.log(currentUser);
+          const allUsers = document.querySelectorAll(
+            '.container_messages_users-text_users_user'
+          );
+          allUsers.forEach((user) => {
+            console.log(user.childNodes[0].data);
+            if (user.childNodes[0].data == channelPartner.Username) {
+              messagesUsers.insertBefore(user, messagesUsers.firstChild);
+            }
+          });
+          // messagesUsers.insertBefore( ,messagesUsers.firstChild)
+          // usersParent[0].insertBefore(user, usersParent[0].firstChild);
           // send text to server via socket
-
           socket.send(
             JSON.stringify({
               type: 'message',
@@ -286,6 +299,7 @@ export const Messages = () => {
       socket.send(
         JSON.stringify({
           type: 'onlineStatus',
+          status: 'online',
         })
       );
     } else {
@@ -293,6 +307,7 @@ export const Messages = () => {
         socket.send(
           JSON.stringify({
             type: 'onlineStatus',
+            status: 'online',
           })
         );
       };
@@ -300,21 +315,24 @@ export const Messages = () => {
 
     socket.onmessage = (e) => {
       let message = JSON.parse(e.data);
-      console.log(message);
       if (message.type == 'onlineStatus') {
+        console.log('Got online user list! ');
         const allUsers = document.querySelectorAll(
           '.container_messages_users-text_users_user'
         );
-        for (let i = 0; i < message.connectedclients.length; i++) {
-          console.log('Online user: ', message.connectedclients[i]);
-          allUsers.forEach((user) => {
+        allUsers.forEach((user) => {
+          if (user.classList.contains('user-logged-in')) {
+            user.classList.remove('user-logged-in');
+          }
+        });
+        allUsers.forEach((user) => {
+          for (let i = 0; i < message.connectedclients.length; i++) {
             if (user.id == message.connectedclients[i]) {
+              console.log('Applying online status to user: ', user.id);
               user.classList.add('user-logged-in');
             }
-          });
-
-          users.filter((x) => x.Id == message.connectedclients[i]).style;
-        }
+          }
+        });
       }
       if (channelPartner != null) {
         if (channelPartner.Id == message.fromuserid) {
@@ -374,12 +392,16 @@ export const Messages = () => {
           });
         }
       } else {
+        const usersParent = document.querySelectorAll(
+          '.container_messages_users-text_users'
+        );
         const allUsers = document.querySelectorAll(
           '.container_messages_users-text_users_user'
         );
         allUsers.forEach((user) => {
           if (user.childNodes[0].data == message.fromuser) {
             user.classList.add('new-message');
+            usersParent[0].insertBefore(user, usersParent[0].firstChild);
           }
         });
       }

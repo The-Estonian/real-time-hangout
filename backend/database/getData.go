@@ -144,14 +144,27 @@ func GetComments(postId string) []structs.Comment {
 func GetUsers(CurrUser string) []structs.User {
 	db := DbConnection()
 	var AllUsers []structs.User
-	command := "SELECT id, username, age, gender, firstName, lastName, email FROM users"
-	rows, err := db.Query(command)
+	// command := "SELECT id, username, age, gender, firstName, lastName, email FROM users ORDER BY username ASC"
+	command := `SELECT 
+	users.id, 
+	users.username, 
+	users.age, 
+	users.gender, 
+	users.firstName, 
+	users.lastName, 
+	users.email, 
+	MAX(messages.created) 
+	FROM users 
+	LEFT JOIN messages ON (users.id = messages.userposter_from_users OR users.id = messages.userreceiver_from_users) 
+	GROUP BY users.id 
+	ORDER BY messages.created DESC, users.username ASC`
+	rows, err := db.Query(command, CurrUser)
 	defer db.Close()
 	helpers.CheckErr("GetUsers", err)
 	for rows.Next() {
 		var user structs.User
 		user.CurrentUser = false
-		rows.Scan(&user.Id, &user.Username, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email)
+		rows.Scan(&user.Id, &user.Username, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.LastMessage)
 		if user.Id == CurrUser {
 			user.CurrentUser = true
 		}

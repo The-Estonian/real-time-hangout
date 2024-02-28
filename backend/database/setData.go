@@ -90,6 +90,6 @@ func SetNewMessage(fromuser, message, touser string) {
 		"created) " +
 		"VALUES(?, ?, ?, datetime('now', '+2 hours'))"
 	_, err := db.Exec(command, fromuser, message, touser)
-	helpers.CheckErr("SetNewComment", err)
+	helpers.CheckErr("SetNewMessage", err)
 	defer db.Close()
 }
