@@ -13,7 +13,7 @@ export const Forum = () => {
       'img',
       'container_postContent_categories_catImg'
     );
-    category.src = each.imgSrc;
+    category.setAttribute('src', each.imgSrc);
     category.setAttribute('alt', each.imgAlt);
     category.setAttribute('id', each.id);
     category.addEventListener('click', (e) => {

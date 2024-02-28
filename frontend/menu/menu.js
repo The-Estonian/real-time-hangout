@@ -56,4 +56,3 @@ export const Menu = () => {
   return menuContainer;
 };
 
-// "abc <script>alert(1)<" + "/script> def"

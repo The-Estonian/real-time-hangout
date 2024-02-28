@@ -75,6 +75,20 @@ func GetUserIdByUsername(username string) string {
 	return userId
 }
 
+func GetUsernameById(id string) string {
+	db := DbConnection()
+	var username string
+	err := db.QueryRow("SELECT username FROM users WHERE id=?", id).Scan(&username)
+	defer db.Close()
+	if err != nil {
+		if err != sql.ErrNoRows {
+			helpers.CheckErr("GetUsernameById", err)
+		}
+		return "Id not found"
+	}
+	return username
+}
+
 func GetAllPosts(catFilter []string) []structs.Post {
 	db := DbConnection()
 	var AllPosts []structs.Post

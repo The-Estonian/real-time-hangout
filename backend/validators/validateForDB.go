@@ -105,3 +105,7 @@ func GetMessageBeforeDB(fromuser, count, touser string) []structs.Message {
 func GetMoreMessagesBeforeDB(fromuser, count, touser string) []structs.Message {
 	return database.GetMoreMessages(fromuser, count, touser)
 }
+
+func GetUsernameByIdBeforeDB(id string) string {
+	return database.GetUsernameById(id)
+}

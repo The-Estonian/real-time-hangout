@@ -21,9 +21,11 @@ func HandleState(w http.ResponseWriter, r *http.Request) {
 		callback["login"] = "fail"
 	} else {
 		exists, userId := validators.GetHashBeforeDB(cookie.Value)
+		username := validators.GetUsernameByIdBeforeDB(userId)
 		if exists {
 			callback["login"] = "success"
 			callback["userId"] = userId
+			callback["username"] = username
 		} else {
 			callback["login"] = "fail"
 		}
@@ -35,4 +37,3 @@ func HandleState(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write(writeData)
 }
- 

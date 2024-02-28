@@ -2,6 +2,7 @@ import { DeleteCookie } from '../helpers/delCookie.js';
 import { GetState } from './getState.js';
 import { Menu } from '../menu/menu.js';
 import { Auth } from '../menu/auth.js';
+import { NewElement } from '../helpers/createElement.js';
 
 export let socket;
 
@@ -18,12 +19,18 @@ export const CheckUserState = (
   if (checkAuthentication) {
     GetState().then((data) => {
       if (data['login'] == 'success') {
+        const setUsername = NewElement(
+          'span',
+          'container_menu_button_username',
+          data['username']
+        );
+        menuContent.insertBefore(setUsername, menuContent.lastChild);
         if (socket == undefined || socket.readyState === WebSocket.CLOSED) {
-          console.log("Starting new socket");
+          console.log('Starting new socket');
           startSocket();
         }
         if (socket.readyState === WebSocket.OPEN) {
-          console.log("Sending online status");
+          console.log('Sending online status');
           socket.send(
             JSON.stringify({
               type: 'onlineStatus',
