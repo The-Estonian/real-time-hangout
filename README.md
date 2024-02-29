@@ -5,8 +5,11 @@ To audit the program, find the steps [here](https://github.com/01-edu/public/tre
 ## Project Description
 
 Real Time Forum stack:
+
 Frontend: HTML, CSS, Vanilla JS
+
 Backend: Golang
+
 Database: SQLite
 
 Place where you can create posts with categories, comment the posts and have Live chat with other users or just send them messages if they are online/offline.
