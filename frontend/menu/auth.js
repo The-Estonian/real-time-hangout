@@ -6,8 +6,6 @@ import { Forum } from '../pages/forum.js';
 import { SendLoginData } from '../backendConnection/sendLoginData';
 import { SendRegisterData } from '../backendConnection/sendRegisterData';
 
-
-
 export const Auth = () => {
   const loginContainer = LoginMenu();
   const registerContainer = RegisterMenu();
@@ -73,6 +71,16 @@ export const Auth = () => {
   const registerSubmit = registerContainer.querySelector(
     '.container_menu_register_submit'
   );
+  let registrationEmailTaken = NewElement(
+    'span',
+    'container_menu_login_credentials',
+    'Email already in use!'
+  );
+  let registrationUsernameTaken = NewElement(
+    'span',
+    'container_menu_login_credentials',
+    'Username already in use!'
+  );
   registerSubmit.addEventListener('click', (e) => {
     let username = registerContainer.childNodes[1].value;
     let age = registerContainer.childNodes[3].value;
@@ -92,7 +100,28 @@ export const Auth = () => {
     )
       .then((data) => {
         console.log(data);
+        if (data.registration === 'fail') {
+          if (data.email) {
+            console.log("It's email");
+            if (!registerContainer.contains(registrationEmailTaken)) {
+              console.log('Applying email error');
+              registerContainer.appendChild(registrationEmailTaken);
+            }
+          }
+          if (data.username) {
+            if (registerContainer.contains(registrationUsernameTaken)) {
+              registerContainer.removeChild(registrationUsernameTaken);
+            }
+            registerContainer.appendChild(registrationUsernameTaken);
+          }
+        }
         if (data.registration === 'success') {
+          if (registerContainer.contains(registrationEmailTaken)) {
+            registerContainer.removeChild(registrationEmailTaken);
+          }
+          if (registerContainer.contains(registrationUsernameTaken)) {
+            registerContainer.removeChild(registrationUsernameTaken);
+          }
           loginOrRegister.dispatchEvent(new Event('click'));
           let registrationSuccess = NewElement(
             'span',

@@ -78,15 +78,9 @@ html {
   margin-left: auto;
 }
 .container_menu_button_username {
-  display: flex;
   color: white;
-  text-decoration: none;
+  font-weight: bold;
   padding: 0.2rem 1rem;
-  background: none;
-  border: none;
-  font-size: inherit;
-  transition: all 0.2s ease-in-out;
-  border-bottom: 1px solid transparent;
   margin-left: auto;
 }
 .container_menu_login, .container_menu_register {

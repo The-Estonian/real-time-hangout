@@ -381,6 +381,17 @@ export const Messages = () => {
             messagesText.appendChild(text);
             messagesText.scrollTo(0, messagesText.scrollHeight);
           }
+          const usersParent = document.querySelectorAll(
+            '.container_messages_users-text_users'
+          );
+          const allUsers = document.querySelectorAll(
+            '.container_messages_users-text_users_user'
+          );
+          allUsers.forEach((user) => {
+            if (user.childNodes[0].data == message.fromuser) {
+              usersParent[0].insertBefore(user, usersParent[0].firstChild);
+            }
+          });
         } else {
           const allUsers = document.querySelectorAll(
             '.container_messages_users-text_users_user'

@@ -48,7 +48,7 @@ func periodicUserPresenceCheck() {
 		currentTimestamp := time.Now()
 		for client := range clients {
 			client.mu.Lock()
-			if currentTimestamp.Sub(client.lastActive) > time.Minute {
+			if currentTimestamp.Sub(client.lastActive) > 3*time.Minute {
 				client.connection.Close()
 				delete(clients, client)
 			}
