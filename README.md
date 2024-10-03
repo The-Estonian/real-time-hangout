@@ -14,6 +14,12 @@ Database: SQLite
 
 Place where you can create posts with categories, comment the posts and have Live chat with other users or just send them messages if they are online/offline.
 
+## Screenshots
+
+Here's a Gif of the project:
+
+![Project Screenshot](real-time-forum.gif)
+
 ## How to Run the Project
 
 Open first terminal
